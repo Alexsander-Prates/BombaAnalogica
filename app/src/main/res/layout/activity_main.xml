@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".ActivityOnePrecos">
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="138dp"
+        android:layout_height="124dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnProximoGravar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.058"
+        app:srcCompat="@drawable/bombap" />
+    
+
+    <EditText
+        android:id="@+id/editNumberValorLitro"
+        style="@style/Edit_Text"
+        android:layout_width="310dp"
+        android:layout_height="65dp"
+        android:drawableRight="@drawable/ic_combustivel"
+        android:ems="10"
+        android:hint="@string/entreValorG"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageView2"/>
+
+    <EditText
+        android:id="@+id/editNumberValorOleo"
+        style="@style/Edit_Text"
+        android:layout_width="309dp"
+        android:layout_height="67dp"
+        android:drawableRight="@drawable/ic_oil"
+        android:ems="10"
+        android:hint="@string/entreValorO"
+        android:inputType="number|numberDecimal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editNumberValorLitro"/>
+    
+    <ProgressBar
+        android:id="@+id/progressebar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editNumberValorOleo"
+        />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnProximoGravar"
+        style="@style/Button"
+        android:layout_width="286dp"
+        android:layout_height="60dp"
+        android:text="@string/proximo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressebar"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

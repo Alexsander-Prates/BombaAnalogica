@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".ActivityTwoCalculos">
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="198dp"
+        android:layout_height="110dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.054"
+        app:srcCompat="@drawable/imagemlogo" />
+
+    <EditText
+        android:id="@+id/editTextLeInic"
+        style="@style/Edit_Text"
+        android:layout_width="319dp"
+        android:layout_height="72dp"
+        android:drawableRight="@drawable/ic_combustivel"
+        android:ems="10"
+        android:hint="@string/leituraInicial"
+        android:inputType="number"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageView3"/>
+
+
+    <EditText
+        android:id="@+id/editTextLeFim"
+        style="@style/Edit_Text"
+        android:layout_width="325dp"
+        android:layout_height="72dp"
+        android:drawableRight="@drawable/ic_combustivel"
+        android:ems="10"
+        android:hint="@string/leituraFinal"
+        android:inputType="number"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLeInic"/>
+
+    <EditText
+        android:id="@+id/editTextQntOl"
+        style="@style/Edit_Text"
+        android:layout_width="124dp"
+        android:layout_height="72dp"
+        android:drawableRight="@drawable/ic_oil"
+        android:ems="10"
+        android:hint="@string/nOleo"
+        android:inputType="number"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLeFim"/>
+
+    <!--<ProgressBar
+        android:id="@+id/progressebar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/editTextQntOl"
+        app:layout_constraintEnd_toStartOf="@+id/editTextQntOl"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLeFim"
+
+        />-->
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonCalcular"
+        style="@style/Button"
+        android:layout_width="286dp"
+        android:layout_height="60dp"
+        android:text="@string/calcular"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextQntOl"/>
+
+    <TextView
+        android:id="@+id/textViewTotal"
+        android:layout_width="347dp"
+        android:layout_height="186dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        style="@style/ContainerComponentes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonCalcular"
+        app:layout_marginBaseline="30dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

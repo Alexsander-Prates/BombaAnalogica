@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Calculo Bomba Analógica</string>
+    <string name="calcular">CALCULAR</string>
+    <string name="atribuirPreco">ATRIBUIR PREÇO</string>
+    <string name="valorLitro">VALOR LITRO</string>
+    <string name="valorOleo">VALOR OLEO</string>
+    <string name="valorTaxa">VALOR TAXA</string>
+    <string name="proximo">PROXIMO</string>
+    <string name="leituraInicial">LEITURA INICIAL</string>
+    <string name="leituraFinal">LEITURA FINAL</string>
+    <string name="quantidade">QUANTIDADE</string>
+    <string name="litros">LITROS</string>
+    <string name="valorTotal">VALOR TOTAL</string>
+    <string name="entreValorG">R$ Gasolina</string>
+    <string name="entreValorO">R$ Óleo</string>
+    <string name="nOleo">Nº Óleo</string>
+</resources>
