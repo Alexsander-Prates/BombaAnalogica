@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 
 
-public class ActivityTwoCalculos extends AppCompatActivity {
+public class Main2Activity extends AppCompatActivity {
 
 
     private String tResultados;
@@ -42,7 +42,7 @@ public class ActivityTwoCalculos extends AppCompatActivity {
                 if((valorLitro!=null)&&((TextUtils.isEmpty(leituraInic.getText().toString())) ||
                         (TextUtils.isEmpty(leituraFim.getText().toString())))) {
 
-                    Toast.makeText(ActivityTwoCalculos.this, "Preencha os campos", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Main2Activity.this, "Preencha os campos", Toast.LENGTH_LONG).show();
 
 
                 }else {
@@ -84,7 +84,7 @@ public class ActivityTwoCalculos extends AppCompatActivity {
             leituraInicial=Float.parseFloat(leituraInic.getText().toString());
             leituraFinal=Float.parseFloat(leituraFim.getText().toString());
             if(leituraInicial>=leituraFinal){
-                Toast.makeText(ActivityTwoCalculos.this, "Leitura Inicial Maior que Final", Toast.LENGTH_LONG).show();
+                Toast.makeText(Main2Activity.this, "Leitura Inicial Maior que Final", Toast.LENGTH_LONG).show();
                 return 0;
             } else {
                 litros = ((leituraFinal-leituraInicial)/10);

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Calculo Bomba Analógica</string>
+    <string name="app_name">Bomba Analógica</string>
     <string name="calcular">CALCULAR</string>
     <string name="atribuirPreco">ATRIBUIR PREÇO</string>
     <string name="valorLitro">VALOR LITRO</string>
@@ -14,4 +14,12 @@
     <string name="entreValorG">R$ Gasolina</string>
     <string name="entreValorO">R$ Óleo</string>
     <string name="nOleo">Nº Óleo</string>
+    <string name="addNome">Nome</string>
+    <string name="tipo">Tipo</string>
+    <string name="gravar">Gravar</string>
+    <string name="excluir">Excluir</string>
+    <string name="clube">Clube</string>
+    <string name="outros">Outros</string>
+    <string name="cadastrar">Cadastrar</string>
+
 </resources>
