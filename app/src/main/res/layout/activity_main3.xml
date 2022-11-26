@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background"
-        tools:context=".MainActivityCadastros">
+        tools:context=".MainActivityCadastrar">
 
 
         <ImageView
@@ -86,24 +86,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/progressebarMain3"/>
 
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Spinner"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnGravar"/>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnExcluir"
-            style="@style/Button"
-            android:layout_width="286dp"
-            android:layout_height="60dp"
-            android:text="@string/excluir"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

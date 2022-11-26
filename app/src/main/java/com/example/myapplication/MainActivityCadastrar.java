@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class MainActivityCadastros extends AppCompatActivity {
+public class MainActivityCadastrar extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

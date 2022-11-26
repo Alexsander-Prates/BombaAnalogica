@@ -92,8 +92,12 @@ public class MainActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.itemCadastrar:
-                Intent intent2 = new Intent(getApplicationContext(), MainActivityCadastros.class);
+                Intent intent2 = new Intent(getApplicationContext(), MainActivityCadastrar.class);
                 startActivity(intent2);
+                break;
+            case R.id.itemExcluir:
+                Intent intent3= new Intent(getApplicationContext(), MainActivityExcluir.class);
+                startActivity(intent3);
                 break;
 
         }

@@ -26,7 +26,6 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".Main2Activity"
             android:exported="false"
@@ -35,9 +34,8 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
-            android:name=".MainActivityCadastros"
+            android:name=".MainActivityCadastrar"
             android:exported="false"
             android:parentActivityName=".MainActivity">
             <meta-data
@@ -45,6 +43,14 @@
                 android:value="" />
         </activity>
 
+        <activity
+            android:name=".MainActivityExcluir"
+            android:exported="false"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
     </application>
 
 </manifest>
