@@ -8,10 +8,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main_calculations"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    tools:context=".Main2Activity">
+    tools:context=".MainActivityCalculations">
 
     <ImageView
         android:id="@+id/imageView3"
@@ -69,18 +70,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextLeFim"/>
 
-    <!--<ProgressBar
-        android:id="@+id/progressebar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/editTextQntOl"
-        app:layout_constraintEnd_toStartOf="@+id/editTextQntOl"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLeFim"
-
-        />-->
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonCalcular"
@@ -103,7 +92,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttonCalcular"
-        app:layout_marginBaseline="30dp"
+
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

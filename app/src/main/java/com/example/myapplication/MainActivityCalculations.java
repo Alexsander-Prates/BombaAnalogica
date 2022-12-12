@@ -10,11 +10,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.databinding.ActivityMainCalculationsBinding;
 
 
-public class Main2Activity extends AppCompatActivity {
 
+public class MainActivityCalculations extends AppCompatActivity {
 
+    private ActivityMainCalculationsBinding binding;
     private String tResultados;
     private TextView taxa;
     private EditText leituraInic,leituraFim,quantOl;
@@ -27,13 +29,14 @@ public class Main2Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        binding = ActivityMainCalculationsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        leituraInic = findViewById(R.id.editTextLeInic);
-        leituraFim = findViewById(R.id.editTextLeFim);
-        quantOl = findViewById(R.id.editTextQntOl);
-        total = findViewById(R.id.textViewTotal);
-        botaoCalcular = findViewById(R.id.buttonCalcular);
+        leituraInic = binding.editTextLeInic;
+        leituraFim = binding.editTextLeFim;
+        quantOl = binding.editTextQntOl;
+        total = binding.textViewTotal;
+        botaoCalcular = binding.buttonCalcular;
         botaoCalcular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -42,7 +45,7 @@ public class Main2Activity extends AppCompatActivity {
                 if((valorLitro!=null)&&((TextUtils.isEmpty(leituraInic.getText().toString())) ||
                         (TextUtils.isEmpty(leituraFim.getText().toString())))) {
 
-                    Toast.makeText(Main2Activity.this, "Preencha os campos", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivityCalculations.this, "Preencha os campos", Toast.LENGTH_LONG).show();
 
 
                 }else {
@@ -84,7 +87,7 @@ public class Main2Activity extends AppCompatActivity {
             leituraInicial=Float.parseFloat(leituraInic.getText().toString());
             leituraFinal=Float.parseFloat(leituraFim.getText().toString());
             if(leituraInicial>=leituraFinal){
-                Toast.makeText(Main2Activity.this, "Leitura Inicial Maior que Final", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivityCalculations.this, "Leitura Inicial Maior que Final", Toast.LENGTH_LONG).show();
                 return 0;
             } else {
                 litros = ((leituraFinal-leituraInicial)/10);
@@ -117,19 +120,19 @@ public class Main2Activity extends AppCompatActivity {
         public String resultados(){
             calculandoValores();
             if ((valorLitro!=null)&&(valorOleo==null)){
-                tResultados = "Valor do Litro R$: " + valorLitro;
-                tResultados = tResultados + "\n" + litros + " L";
-                tResultados = tResultados + "\n" + "Valor Total à pagar R$: " + totalPagar;
+                tResultados = "   Valor do Litro R$: " + valorLitro;
+                tResultados = tResultados + "   \n  " + litros + "   L";
+                tResultados = tResultados + "   \n" + "   Valor Total à pagar R$: " + totalPagar;
             } else if ((valorOleo!=null)&&(valorLitro==null)){
-                tResultados = "Valor do Óleo R$: " + valorOleo;
-                tResultados = tResultados + "\n" + quantOleo + " Óleo(s)";
-                tResultados = tResultados + "\n" + "Valor Total à pagar R$: " + totalPagar;
+                tResultados = "   Valor do Óleo R$: " + valorOleo;
+                tResultados = tResultados + "   \n  " + quantOleo + "   Óleo(s)";
+                tResultados = tResultados + "   \n" + "   Valor Total à pagar R$: " + totalPagar;
             } else {
-                tResultados = "Valor do Litro R$: " + valorLitro;
-                tResultados = tResultados + "\n" + litros + " L";
-                tResultados = tResultados + "\n" + " Valor do Óleo R$: " + valorOleo;
-                tResultados = tResultados + "\n" + quantOleo + " Óleo(s)";
-                tResultados = tResultados + "\n" + "Valor Total à pagar R$: " + totalPagar;
+                tResultados = "   Valor do Litro R$: " + valorLitro;
+                tResultados = tResultados + "   \n  " + litros + "   L";
+                tResultados = tResultados + "   \n" + "   Valor do Óleo R$: " + valorOleo;
+                tResultados = tResultados + "   \n  " + quantOleo + "   Óleo(s)";
+                tResultados = tResultados + "   \n" + "   Valor Total à pagar R$: " + totalPagar;
             }
 
             total.setText(tResultados.toString());

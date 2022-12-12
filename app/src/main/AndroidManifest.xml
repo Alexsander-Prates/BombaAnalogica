@@ -12,9 +12,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
-
         <activity
-            android:name=".MainActivity"
+            android:name=".MainActivityCreateLogin"
+            android:exported="false"
+            android:parentActivityName=".MainActivityLogin">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".MainActivityLogin"
+            android:exported="false"
+            android:parentActivityName=".MainActivityValues">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".MainActivityValues"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,9 +42,9 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Main2Activity"
+            android:name=".MainActivityCalculations"
             android:exported="false"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivityValues">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -37,16 +52,15 @@
         <activity
             android:name=".MainActivityCadastrar"
             android:exported="false"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivityValues">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".MainActivityExcluir"
             android:exported="false"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivityValues">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

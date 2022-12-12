@@ -21,5 +21,13 @@
     <string name="clube">Clube</string>
     <string name="outros">Outros</string>
     <string name="cadastrar">Cadastrar</string>
+    <string name="email">E-mail</string>
+    <string name="senha">Senha</string>
+    <string name="login">Login</string>
+    <string name="cadastrarNovo">Cadastrar novo usuário</string>
+    <string name="confirmarEmail">Confirmar E-mail</string>
+    <string name="confirmarSenha">Confirmar Senha</string>
+    <string name="user">Nome Usuário</string>
+
 
 </resources>

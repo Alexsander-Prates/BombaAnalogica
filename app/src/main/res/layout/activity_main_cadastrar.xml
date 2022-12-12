@@ -7,7 +7,7 @@
     android:fillViewport="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/activity_main3"
+        android:id="@+id/activity_main_cadastrar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background"
@@ -18,7 +18,6 @@
             android:id="@+id/icon_add_meioLocomocao"
             android:layout_width="138dp"
             android:layout_height="124dp"
-            app:layout_constraintBottom_toTopOf="@+id/editNome"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,8 +27,8 @@
 
 
         <EditText
-            android:id="@+id/editNome"
-            style="@style/Edit_Text"
+            android:id="@+id/editCadastrar"
+            style="@style/Edit_TextLetras"
             android:layout_width="310dp"
             android:layout_height="65dp"
             android:drawableRight="@drawable/add"
@@ -41,27 +40,29 @@
             app:layout_constraintTop_toBottomOf="@id/icon_add_meioLocomocao" />
 
         <RadioGroup
-            android:id="@+id/radioGroup"
+            android:id="@+id/radioGroupFins"
             android:layout_width="309dp"
             android:layout_height="67dp"
             android:ems="10"
+            android:gravity="center|center_vertical"
             android:hint="@string/tipo"
             android:inputType="number|numberDecimal"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editNome" >
+            app:layout_constraintTop_toBottomOf="@+id/editCadastrar">
 
             <RadioButton
-                android:id="@+id/radioButton1"
-                android:layout_width="match_parent"
+                android:id="@+id/radioButtonClube"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/clube"/>
+                android:text="@string/clube" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/radioButtonOutros"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/outros" />
+                android:text="@string/outros" />
         </RadioGroup>
 
         <ProgressBar
@@ -72,7 +73,7 @@
             android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroupFins"
             />
 
 

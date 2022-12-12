@@ -17,13 +17,12 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.myapplication.databinding.ActivityMainValuesBinding;
 
 
+public class MainActivityValues extends AppCompatActivity {
 
-
-public class MainActivity extends AppCompatActivity {
-
-
+    private ActivityMainValuesBinding binding;
     private EditText valorLitro,valorOleo;
     private AppCompatButton botaoProximo;
     private ProgressBar load;
@@ -32,11 +31,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        valorOleo = findViewById(R.id.editNumberValorOleo);
-        valorLitro = findViewById(R.id.editNumberValorLitro);
-        botaoProximo = findViewById(R.id.btnProximoGravar);
-        load = findViewById(R.id.progressebar);
+        binding = ActivityMainValuesBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        valorOleo = binding.editNumberValorOleo;
+        valorLitro = binding.editNumberValorLitro;
+        botaoProximo = binding.btnProximoGravar;
+        load = binding.progressebar;
 
         botaoProximo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,10 +45,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void chamarMainActivity(){
-        Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivityCalculations.class);
         if(TextUtils.isEmpty(valorLitro.getText().toString())){
             intent.putExtra("valorOleo",valorOleo.getText().toString());
         } else if (TextUtils.isEmpty(valorOleo.getText().toString())){
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private void verificadorIniciar(){
         if ((TextUtils.isEmpty(valorOleo.getText().toString()))&&
                 (TextUtils.isEmpty(valorLitro.getText().toString()))) {
-            Toast.makeText(MainActivity.this, "Preencha um dos campos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivityValues.this, "Preencha um dos campos", Toast.LENGTH_SHORT).show();
         }  else {
 
             chamarMainActivity();
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_cadastros,menu);
+        getMenuInflater().inflate(R.menu.menu_login,menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -91,17 +92,15 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()){
-            case R.id.itemCadastrar:
-                Intent intent2 = new Intent(getApplicationContext(), MainActivityCadastrar.class);
+            case R.id.itemLogar:
+                Intent intent2 = new Intent(getApplicationContext(), MainActivityLogin.class);
                 startActivity(intent2);
-                break;
-            case R.id.itemExcluir:
-                Intent intent3= new Intent(getApplicationContext(), MainActivityExcluir.class);
-                startActivity(intent3);
                 break;
 
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }
