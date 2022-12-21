@@ -1,6 +1,6 @@
 package com.example.myapplication;
 
-import android.icu.util.IllformedLocaleException;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,10 +26,10 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+
 
 public class MainActivityCreateLogin extends AppCompatActivity {
 
