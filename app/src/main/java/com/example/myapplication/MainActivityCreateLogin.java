@@ -3,8 +3,12 @@ package com.example.myapplication;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -30,14 +34,22 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+import Util.ConfigBD;
+import model.User;
+
 
 public class MainActivityCreateLogin extends AppCompatActivity {
 
-    private String userID;
+    private CheckBox verSenha;
+    private FirebaseAuth autenticacao;
+    private FirebaseFirestore autenticacaoUserBD;
+    private User user;
     private ActivityMainCreateLoginBinding binding;
+
     private EditText userNovo, emailNovo, senhaNovo, senhaConfirm;
     private AppCompatButton btnCadastrarNovo;
     private ProgressBar load;
+
     private String[] mensagens = {"Preencha dotos os campos", "Cadastro realizado com sucesso", "Usuário salvo","Error User"};
     private String[] mensagensExerc = {"Mínino 6 caracteres", "E-mail já cadastrado, insira outro e-mail",
             "E-mail não existe", "Erro no cadastro, tente novamente", "Preencha os campos senha novamente"};
@@ -48,11 +60,10 @@ public class MainActivityCreateLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainCreateLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        senhaNovo = binding.editSenhaCreateLogin;
-        senhaConfirm = binding.editSenhaCreateLoginConfirm;
-        emailNovo = binding.editEmail;
-        userNovo = binding.editUser;
-        btnCadastrarNovo = binding.btnCreatLogin;
+
+        inicializarLicacoes();
+        MostrarSenhasDigitadas();
+
 
         btnCadastrarNovo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,11 +88,13 @@ public class MainActivityCreateLogin extends AppCompatActivity {
     }
 
     private void cadastrandoUsers() {
-        String email = emailNovo.getText().toString();
-        String senha = senhaNovo.getText().toString();
+        User user = new User();
+        user.setEmail(emailNovo.getText().toString());
+        user.setSenha(senhaNovo.getText().toString());
 
+        autenticacao = ConfigBD.FirebaseAutentic();
 
-        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        autenticacao.createUserWithEmailAndPassword(user.getEmail(), user.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
@@ -89,6 +102,7 @@ public class MainActivityCreateLogin extends AppCompatActivity {
                     Toast.makeText(MainActivityCreateLogin.this, mensagens[1], Toast.LENGTH_SHORT).show();
                     salvingUsuarios();
                 } else {
+                    String[] erroExecao = {};
                     try {
                         throw task.getException();
 
@@ -113,16 +127,18 @@ public class MainActivityCreateLogin extends AppCompatActivity {
 
     private void salvingUsuarios(){
 
-        String nome = userNovo.getText().toString();
+        User user = new User();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        user.setNome(userNovo.getText().toString());
+
+        autenticacaoUserBD=ConfigBD.FirebaseCadastroUser();
 
         Map<String,Object> useres = new HashMap<>();
-        useres.put("nome", nome);
+        useres.put("nome", user.getNome());
 
-        userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        user.setUserID(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        DocumentReference documentReference = db.collection("Usuarios").document(userID);
+        DocumentReference documentReference = autenticacaoUserBD.collection("Usuarios").document(user.getUserID());
         documentReference.set(useres).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
@@ -136,6 +152,31 @@ public class MainActivityCreateLogin extends AppCompatActivity {
                         Log.d("db_error",mensagens[3]+e.toString());
                     }
                 });
+    }
+
+    private void inicializarLicacoes(){
+
+        senhaNovo = binding.editSenhaCreateLogin;
+        senhaConfirm = binding.editSenhaCreateLoginConfirm;
+        emailNovo = binding.editEmail;
+        userNovo = binding.editUser;
+        btnCadastrarNovo = binding.btnCreatLogin;
+        verSenha = binding.chekSenhaCreatLogin;
+    }
+
+    private void MostrarSenhasDigitadas(){
+        verSenha.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    senhaNovo.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    senhaConfirm.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                } else {
+                    senhaNovo.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    senhaConfirm.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                }
+            }
+        });
     }
 
 }

@@ -33,10 +33,9 @@ public class MainActivityValues extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainValuesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        valorOleo = binding.editNumberValorOleo;
-        valorLitro = binding.editNumberValorLitro;
-        botaoProximo = binding.btnProximoGravar;
-        load = binding.progressebar;
+
+        iniciliazarLigacoes();
+
 
         botaoProximo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +99,13 @@ public class MainActivityValues extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void iniciliazarLigacoes(){
+        valorOleo = binding.editNumberValorOleo;
+        valorLitro = binding.editNumberValorLitro;
+        botaoProximo = binding.btnProximoGravar;
+        load = binding.progressebar;
     }
 
 

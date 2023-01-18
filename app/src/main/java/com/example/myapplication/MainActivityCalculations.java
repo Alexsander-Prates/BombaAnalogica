@@ -32,11 +32,9 @@ public class MainActivityCalculations extends AppCompatActivity {
         binding = ActivityMainCalculationsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        leituraInic = binding.editTextLeInic;
-        leituraFim = binding.editTextLeFim;
-        quantOl = binding.editTextQntOl;
-        total = binding.textViewTotal;
-        botaoCalcular = binding.buttonCalcular;
+        inicialicarLigacoes();
+
+
         botaoCalcular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -138,5 +136,13 @@ public class MainActivityCalculations extends AppCompatActivity {
             total.setText(tResultados.toString());
              return tResultados;
         }
+
+    private void inicialicarLigacoes(){
+        leituraInic = binding.editTextLeInic;
+        leituraFim = binding.editTextLeFim;
+        quantOl = binding.editTextQntOl;
+        total = binding.textViewTotal;
+        botaoCalcular = binding.buttonCalcular;
+    }
 
 }

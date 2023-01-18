@@ -78,7 +78,7 @@
 
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnGravar"
+            android:id="@+id/btnGravarCadastrar"
             style="@style/Button"
             android:layout_width="286dp"
             android:layout_height="60dp"
