@@ -1,24 +1,40 @@
 package model;
 
-public class Autos {
+import com.google.firestore.admin.v1.Index;
 
-    private String clube,outros,autoID,auto;
+public class Autos extends User {
+
+    private String clube,outros,id,auto,desc, photo;
+    Index index;
 
     public  Autos(){
 
     }
 
-    public Autos(String clube, String outros, String auto) {
+    public Autos(String clube, String outros, String id, String auto, String desc, String photo, Index index) {
         this.clube = clube;
         this.outros = outros;
+        this.id = id;
         this.auto = auto;
+        this.desc = desc;
+        this.photo = photo;
+        this.index = index;
     }
 
-    public Autos(String clube, String outros, String autoID, String auto) {
-        this.clube = clube;
-        this.outros = outros;
-        this.autoID = autoID;
-        this.auto = auto;
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public Index getIndex() {
+        return index;
+    }
+
+    public void setIndex(Index index) {
+        this.index = index;
     }
 
 
@@ -47,11 +63,19 @@ public class Autos {
         this.outros = outros;
     }
 
-    public String getAutoID() {
-        return autoID;
+    public String getId() {
+        return id;
     }
 
-    public void setAutoID(String autoID) {
-        this.autoID = autoID;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }

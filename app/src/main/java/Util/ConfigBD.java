@@ -7,6 +7,7 @@ public class ConfigBD {
 
     private static FirebaseAuth auth;
     private static FirebaseFirestore db;
+    private static FirebaseFirestore db2;
 
 
 
@@ -26,5 +27,16 @@ public class ConfigBD {
         }
         return db;
     }
+
+    public static FirebaseFirestore FirebaseCadastroValor(){
+        if(db2==null){
+            db=FirebaseFirestore.getInstance();
+        }
+        return db2;
+    }
+
+
+
+
 
 }

@@ -4,7 +4,7 @@
        android:startColor="@color/white"
        android:centerColor="@color/white"
        android:endColor="@color/dodgerBlue"
-       android:angle="18"
+       android:angle="45"
        />
 
 
