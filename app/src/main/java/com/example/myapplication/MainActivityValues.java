@@ -22,10 +22,11 @@ import com.example.myapplication.databinding.ActivityMainValuesBinding;
 
 public class MainActivityValues extends AppCompatActivity {
 
-    private ActivityMainValuesBinding binding;
+    ActivityMainValuesBinding binding;
     private EditText valorLitro,valorOleo;
     private AppCompatButton botaoProximo;
     private ProgressBar load;
+
 
 
     @Override
@@ -35,6 +36,8 @@ public class MainActivityValues extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         iniciliazarLigacoes();
+
+
 
 
         botaoProximo.setOnClickListener(new View.OnClickListener() {
@@ -47,12 +50,17 @@ public class MainActivityValues extends AppCompatActivity {
 
     }
 
-    private void chamarMainActivity(){
-        Intent intent = new Intent(getApplicationContext(), MainActivityCalculations.class);
+    private void chamarTelaCalculos(){
+
+        Intent intent = new Intent(getApplicationContext(),MainActivityCalculations.class);
         if(TextUtils.isEmpty(valorLitro.getText().toString())){
             intent.putExtra("valorOleo",valorOleo.getText().toString());
+            valorLitro.setText("0");
+            intent.putExtra("valorLitro",valorLitro.getText().toString());
         } else if (TextUtils.isEmpty(valorOleo.getText().toString())){
             intent.putExtra("valorLitro",valorLitro.getText().toString());
+            valorOleo.setText("0");
+            intent.putExtra("valorOleo",valorOleo.getText().toString());
         } else{
             intent.putExtra("valorOleo",valorOleo.getText().toString());
             intent.putExtra("valorLitro",valorLitro.getText().toString());
@@ -68,7 +76,8 @@ public class MainActivityValues extends AppCompatActivity {
             Toast.makeText(MainActivityValues.this, "Preencha um dos campos", Toast.LENGTH_SHORT).show();
         }  else {
 
-            chamarMainActivity();
+            chamarTelaCalculos();
+
 
         }
 
@@ -105,7 +114,7 @@ public class MainActivityValues extends AppCompatActivity {
         valorOleo = binding.editNumberValorOleo;
         valorLitro = binding.editNumberValorLitro;
         botaoProximo = binding.btnProximoGravar;
-        load = binding.progressebar;
+        load = binding.progresseBBar;
     }
 
 

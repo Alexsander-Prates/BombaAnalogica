@@ -1,24 +1,38 @@
 package Util;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
+
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.example.myapplication.R;
 
+import com.squareup.picasso.Picasso;
+
+
+import java.io.IOError;
 import java.util.ArrayList;
 
 import model.Autos;
+
 
 public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     Context context;
     ArrayList<Autos> userArrayList;
+
+
+
 
     public Adapter(Context context, ArrayList<Autos> userArrayList) {
         this.context = context;
@@ -30,19 +44,41 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(context).inflate(R.layout.item_list_recycle,parent,false);
+
         return new MyViewHolder(v);
+
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+
+
         Autos autos = userArrayList.get(position);
 
-        holder.auto.setText(autos.getAuto());
-        holder.clube.setText(autos.getClube());
 
+        holder.auto.setText(autos.getAuto());
+        holder.desc.setText(autos.getDesc());
+
+        try{
+            Picasso.get().load(autos.getPhoto()).into(holder.photo);
+        } catch (IOError e){
+            Log.i("Teste_photo", autos.getPhoto());
+        }
+
+
+
+        if(TextUtils.isEmpty(autos.getClube())){
+            holder.outro.setText("Outros");
+        } else{
+            holder.clube.setText(autos.getClube());
+        }
 
 
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -51,16 +87,22 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView auto, clube, user;
+        TextView auto, clube, desc, outro;
+        ImageView photo;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
+
             auto=itemView.findViewById(R.id.textAuto);
             clube=itemView.findViewById(R.id.textCategoria);
-            user=itemView.findViewById(R.id.textUser);
-        }
-    }
+            outro=itemView.findViewById(R.id.textCategoria);
+            desc=itemView.findViewById(R.id.textDesc);
+            photo=itemView.findViewById(R.id.receberImagem);
 
+        }
+
+    }
 
 }

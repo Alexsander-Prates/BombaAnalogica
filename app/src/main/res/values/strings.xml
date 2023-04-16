@@ -28,6 +28,9 @@
     <string name="confirmarEmail">Confirmar E-mail</string>
     <string name="confirmarSenha">Confirmar Senha</string>
     <string name="user">Nome Usuário</string>
+    <string name="Cadastrar">Show Cadastratros</string>
+    <string name="vincular">Vincular Auto</string>
+    <string name="entre">Entre</string>
 
 
 </resources>
