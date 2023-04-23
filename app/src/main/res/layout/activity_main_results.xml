@@ -40,6 +40,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_baseline_info"
+        android:padding="3dp"
         />
 
     <TextView
@@ -192,29 +193,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linear1"/>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSelecionarAuto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Button"
-        android:textColor="@color/red"
-        android:text="Vincular Valores"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recListItens"
-        android:layout_marginRight="300dp">
-    </androidx.appcompat.widget.AppCompatButton>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btnSelecionarLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Button"
-        android:text="Log"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recListItens">
-    </androidx.appcompat.widget.AppCompatButton>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnEnviar"

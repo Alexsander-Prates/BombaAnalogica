@@ -26,6 +26,21 @@
             app:layout_constraintVertical_bias="0.058"
             app:srcCompat="@drawable/delete" />
 
+        <ImageButton
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/informativo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.192"
+            app:layout_constraintStart_toEndOf="@+id/icon_excluir_meioLocomocao"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ic_baseline_info"
+            android:padding="3dp"
+            />
+
         <com.tsuryo.swipeablerv.SwipeableRecyclerView
             android:id="@+id/recyclerListItens"
             android:layout_width="match_parent"
