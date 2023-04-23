@@ -1,13 +1,11 @@
 package model;
 
-
 public class Valores {
 
-    private final String valorTotal, valorGasolina, valorOleo, valorTaxa, quantidadeL, quantidadeO , mensagem;
+    private final String valorGasolina, valorOleo, valorTaxa, quantidadeL, quantidadeO , mensagem;
 
 
-    public Valores(String valorTotal,String valorGasolina, String valorOleo, String valorTaxa, String quantidadeL, String quantidadeO, String mensagem) {
-        this.valorTotal = valorTotal;
+    public Valores(String valorGasolina, String valorOleo, String valorTaxa, String quantidadeL, String quantidadeO, String mensagem) {
         this.valorGasolina = valorGasolina;
         this.valorOleo = valorOleo;
         this.valorTaxa = valorTaxa;
@@ -40,6 +38,4 @@ public class Valores {
     public String getMensagem() {
         return mensagem;
     }
-
-
 }

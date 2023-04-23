@@ -46,14 +46,11 @@ public class MainActivityCalculations extends AppCompatActivity {
             Toast.makeText(MainActivityCalculations.this, "Preencha os campos quantidade de Óleo", Toast.LENGTH_LONG).show();
             leituraInic.setEnabled(false);leituraFim.setEnabled(false);
             leituraInic.setText("0");
-            leituraInic.getText().toString();
             leituraFim.setText("0");
-            leituraFim.getText().toString();
         } else if (valorOleo==0) {
             Toast.makeText(MainActivityCalculations.this, "Preencha os campos Leituras Inicial e Final", Toast.LENGTH_LONG).show();
             quantOl.setEnabled(false);
             quantOl.setText("0");
-            quantOl.getText().toString();
         } else {
             Toast.makeText(MainActivityCalculations.this, "Preencha os campos das Leituras e Óleo", Toast.LENGTH_LONG).show();
         }
@@ -100,16 +97,14 @@ public class MainActivityCalculations extends AppCompatActivity {
     }
 
     public float calculandoValores() {
-        float valorGambiarra = 0;
+
 
         if (valorOleo==0) {
             totalPagar = (litros * valorLitro);
-            quantOleo=valorGambiarra;
 
         } else if (valorLitro==0) {
             quantOleo = Float.parseFloat(quantOl.getText().toString());
             totalPagar = quantOleo * valorOleo;
-            litros=valorGambiarra;
 
         } else {
             quantOleo = Float.parseFloat(quantOl.getText().toString());
@@ -201,14 +196,12 @@ public class MainActivityCalculations extends AppCompatActivity {
                     intent2.putExtra("valorTotal",totalPagar.toString());
                     intent2.putExtra("tResultados",tResultados);
                     intent2.putExtra("litros",litros.toString());
-                    intent2.putExtra("litros",litros.toString());
                     intent2.putExtra("quantO",quantOleo.toString());
                     startActivity(intent2);
-
-
                 } else{
                     Toast.makeText(MainActivityCalculations.this, "Calcule as quantidades", Toast.LENGTH_LONG).show();
                 }
+
             }
         });
         confirmarIncluir.create().show();
