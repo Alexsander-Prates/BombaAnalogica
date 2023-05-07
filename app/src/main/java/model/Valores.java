@@ -1,11 +1,18 @@
 package model;
 
+
 public class Valores {
 
-    private final String valorGasolina, valorOleo, valorTaxa, quantidadeL, quantidadeO , mensagem, valorTotal;
 
 
-    public Valores(String valorTotal, String valorGasolina, String valorOleo, String valorTaxa, String quantidadeL, String quantidadeO, String mensagem) {
+    private  String date, valorGasolina, valorOleo, valorTaxa, quantidadeL, quantidadeO , mensagem, valorTotal;
+
+    public Valores(){
+
+    }
+
+
+    public Valores(String date, String valorTotal, String valorGasolina, String valorOleo, String valorTaxa, String quantidadeL, String quantidadeO, String mensagem) {
         this.valorTotal = valorTotal;
         this.valorGasolina = valorGasolina;
         this.valorOleo = valorOleo;
@@ -13,6 +20,8 @@ public class Valores {
         this.quantidadeL = quantidadeL;
         this.quantidadeO = quantidadeO;
         this.mensagem = mensagem;
+        this.date = date;
+
     }
 
     public String getValorGasolina() {
@@ -37,5 +46,45 @@ public class Valores {
 
     public String getMensagem() {
         return mensagem;
+    }
+
+    public String getValorTotal() {
+        return valorTotal;
+    }
+
+    public String getDate() {
+
+        return date;
+    }
+    public void setValorGasolina(String valorGasolina) {
+        this.valorGasolina = valorGasolina;
+    }
+
+    public void setValorOleo(String valorOleo) {
+        this.valorOleo = valorOleo;
+    }
+
+    public void setValorTaxa(String valorTaxa) {
+        this.valorTaxa = valorTaxa;
+    }
+
+    public void setQuantidadeL(String quantidadeL) {
+        this.quantidadeL = quantidadeL;
+    }
+
+    public void setQuantidadeO(String quantidadeO) {
+        this.quantidadeO = quantidadeO;
+    }
+
+    public void setMensagem(String mensagem) {
+        this.mensagem = mensagem;
+    }
+
+    public void setValorTotal(String valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

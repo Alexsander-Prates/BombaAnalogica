@@ -3,13 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivityHistorics">
 
     <TextView
+        android:id="@+id/testeId"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="30dp"/>
+        android:gravity="center"
+        android:text="Lista de Valores"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerListHistoric"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.277"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/autoHistoric"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="Enter"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerListHistoric"
+        app:layout_constraintTop_toBottomOf="@+id/testeId"
+        tools:layout_editor_absoluteX="0dp" />
 
     <LinearLayout
         android:id="@+id/linearItens"
@@ -26,11 +47,11 @@
         android:id="@+id/recyclerListHistoric"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="216dp"
         android:foregroundGravity="center"
         app:layout_constraintTop_toBottomOf="@+id/linearItens"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="1dp">
+        tools:layout_editor_absoluteX="16dp">
 
     </com.tsuryo.swipeablerv.SwipeableRecyclerView>
 

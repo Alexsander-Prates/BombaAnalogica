@@ -77,6 +77,15 @@
                 android:value="" />
         </activity>
 
+        <activity
+            android:name=".MainActivityHistorics"
+            android:exported="false"
+            android:parentActivityName=".MainActivityExcluir">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
     </application>
 
 </manifest>
