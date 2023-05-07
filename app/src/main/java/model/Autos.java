@@ -4,14 +4,14 @@ import com.google.firestore.admin.v1.Index;
 
 public class Autos extends User {
 
-    private String clube,outros,id,auto,desc, photo;
+    private String clube,outros,id,auto,desc, photo, photoKey;
     Index index;
 
     public  Autos(){
 
     }
 
-    public Autos(String clube, String outros, String id, String auto, String desc, String photo, Index index) {
+    public Autos(String photoKey, String clube, String outros, String id, String auto, String desc, String photo, Index index) {
         this.clube = clube;
         this.outros = outros;
         this.id = id;
@@ -19,6 +19,7 @@ public class Autos extends User {
         this.desc = desc;
         this.photo = photo;
         this.index = index;
+        this.photoKey = photoKey;
     }
 
     public String getPhoto() {
@@ -77,5 +78,13 @@ public class Autos extends User {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public String getPhotoKey() {
+        return photoKey;
+    }
+
+    public void setPhotoKey(String photoKey) {
+        this.photoKey = photoKey;
     }
 }

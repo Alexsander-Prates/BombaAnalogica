@@ -1,11 +1,13 @@
 package Util;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.myapplication.MainActivityCalculations;
+import com.example.myapplication.MainActivityHistorics;
 import com.example.myapplication.R;
 
 import com.squareup.picasso.Picasso;
@@ -28,6 +32,7 @@ import model.Autos;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
+    ImageButton btn;
     Context context;
     ArrayList<Autos> userArrayList;
 
@@ -56,7 +61,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
 
         Autos autos = userArrayList.get(position);
-
+        String id = userArrayList.get(position).getId();
+        String nome =userArrayList.get(position).getAuto();
 
         holder.auto.setText(autos.getAuto());
         holder.desc.setText(autos.getDesc());
@@ -74,6 +80,16 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         } else{
             holder.clube.setText(autos.getClube());
         }
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context.getApplicationContext(),MainActivityHistorics.class);
+                intent.putExtra("id",id);
+                intent.putExtra("nomeAuto",nome);
+
+                context.startActivity(intent);
+            }
+        });
 
 
     }
@@ -94,7 +110,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-
+            btn=itemView.findViewById(R.id.btnHistoric);
             auto=itemView.findViewById(R.id.textAuto);
             clube=itemView.findViewById(R.id.textCategoria);
             outro=itemView.findViewById(R.id.textCategoria);
@@ -104,5 +120,6 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         }
 
     }
+
 
 }

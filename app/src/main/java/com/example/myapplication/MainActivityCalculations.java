@@ -99,20 +99,23 @@ public class MainActivityCalculations extends AppCompatActivity {
     public float calculandoValores() {
 
 
+        float valorGambiarra = 0;
+
+
         if (valorOleo==0) {
             totalPagar = (litros * valorLitro);
+            quantOleo=valorGambiarra;
 
         } else if (valorLitro==0) {
             quantOleo = Float.parseFloat(quantOl.getText().toString());
             totalPagar = quantOleo * valorOleo;
+            litros=valorGambiarra;
 
         } else {
             quantOleo = Float.parseFloat(quantOl.getText().toString());
             totalPagar = (litros * valorLitro);
             totalPagar += quantOleo * valorOleo;
-
         }
-
         return totalPagar;
 
     }
@@ -194,7 +197,7 @@ public class MainActivityCalculations extends AppCompatActivity {
                     intent2.putExtra("valorLitro",valorLitro.toString());
                     intent2.putExtra("valorOleo",valorOleo.toString());
                     intent2.putExtra("valorTotal",totalPagar.toString());
-                    intent2.putExtra("tResultados",tResultados);
+                    intent2.putExtra("mensagem",tResultados);
                     intent2.putExtra("litros",litros.toString());
                     intent2.putExtra("quantO",quantOleo.toString());
                     startActivity(intent2);

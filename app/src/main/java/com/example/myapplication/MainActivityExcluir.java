@@ -25,6 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.tsuryo.swipeablerv.SwipeLeftRightCallback;
 import com.tsuryo.swipeablerv.SwipeableRecyclerView;
 
@@ -38,6 +40,9 @@ public class MainActivityExcluir extends AppCompatActivity {
 
     FirebaseFirestore autenticacaoUserBD = ConfigBD.FirebaseCadastroUser();
     CollectionReference meusAutos = autenticacaoUserBD.collection("AutosCadastro");
+
+    FirebaseStorage storage;
+    StorageReference storageReference;
 
 
 
@@ -55,6 +60,9 @@ public class MainActivityExcluir extends AppCompatActivity {
         binding = ActivityMainExcluirBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+
         inicilializarLigacoes();
 
 
@@ -64,12 +72,12 @@ public class MainActivityExcluir extends AppCompatActivity {
         adapter = new Adapter(MainActivityExcluir.this,userArrayList);
         listaDeItens.setAdapter(adapter);
 
-
         iniciarListener();
 
         swipDatas();
 
         irShowCadastros();
+
 
     }
 
@@ -171,9 +179,6 @@ public class MainActivityExcluir extends AppCompatActivity {
     }
 
 
-
-
-
     private void deletDados(int index) {
         AlertDialog.Builder confirmarExcluir = new AlertDialog.Builder(this);
         confirmarExcluir.setTitle("Atenção");
@@ -186,7 +191,9 @@ public class MainActivityExcluir extends AppCompatActivity {
                 meusAutos.document(userArrayList.get(index).getAuto()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
+                                excluirPhoto(index);
                                 userArrayList.remove(index);
+
                                 iniciarListener();
                                 Log.d("DB_DELETE","Excluido com sucesso");
                             }
@@ -209,6 +216,24 @@ public class MainActivityExcluir extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), MainActivityCadastrar.class);
                 startActivity(intent);
+            }
+        });
+    }
+
+
+
+    private void excluirPhoto(int index){
+        String atalho = userArrayList.get(index).getPhotoKey();
+        StorageReference storageRef = storageReference.child("images/" + atalho);
+        storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d("StoreDelet","Foi deletado");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("StoreDelet","NÃOOOOOOOOOOOOOOOOOOOOOOO Foi deletado");
             }
         });
     }

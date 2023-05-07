@@ -8,20 +8,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Picture;
-import android.graphics.drawable.PictureDrawable;
+
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import com.squareup.picasso.Picasso;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,13 +28,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
+
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.squareup.picasso.Picasso;
 import com.tsuryo.swipeablerv.SwipeLeftRightCallback;
 import com.tsuryo.swipeablerv.SwipeableRecyclerView;
 
@@ -46,7 +42,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +49,7 @@ import java.util.Date;
 
 import Util.Adapter;
 import Util.ConfigBD;
+import Util.PDF;
 import model.Autos;
 import model.Valores;
 
@@ -144,7 +140,7 @@ public class MainActivityResults extends AppCompatActivity {
             public void onSwipedLeft(int position) {
                 salvarValoresAuto(position);
                 adapter.notifyDataSetChanged();
-                salvarValoresAuto(position);
+
                 //abilitar botao enviar e pintar de verde
 
 
@@ -152,10 +148,8 @@ public class MainActivityResults extends AppCompatActivity {
 
             @Override
             public void onSwipedRight(int position) {
-                salvarValoresAuto(position);
-                adapter.notifyDataSetChanged();
-                salvarValoresAuto(position);
-                //abilitar botao enviar e pintar de verde
+
+
             }
         });
     }
@@ -200,21 +194,22 @@ public class MainActivityResults extends AppCompatActivity {
         String valorTotalPagarS = getIntent().getStringExtra("valorTotal");
         String litros = getIntent().getStringExtra("litros");
         String quantO = getIntent().getStringExtra("quantO");
-        String tResultados = getIntent().getStringExtra("tResultados");
+        String mensagem = getIntent().getStringExtra("mensagem");
 
-        AlertDialog.Builder confirmarIncluir = new AlertDialog.Builder(this);
-        confirmarIncluir.setTitle("Atenção");
-        confirmarIncluir.setMessage("Você desejar salvar os valores -> " + tResultados + " no auto selecionado?" +
+        AlertDialog.Builder confirmarSalvar = new AlertDialog.Builder(this);
+        confirmarSalvar.setTitle("Atenção");
+        confirmarSalvar.setMessage("Você desejar salvar os valores -> " + mensagem + " no auto selecionado?" +
                 "Clique em Ok para continuar ou Não para cancelar");
-        confirmarIncluir.setCancelable(false);
-        confirmarIncluir.setNegativeButton("Cancelar", null);
-        confirmarIncluir.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        confirmarSalvar.setCancelable(false);
+        confirmarSalvar.setNegativeButton("Cancelar", null);
+        confirmarSalvar.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String taxaS = String.valueOf(taxa);
-                Valores valores = new Valores(valorTotalPagarS,valorLitroS, valorOleoS, taxaS, litros, quantO, tResultados);
-
                 Date dataAtual = new Date();
+                String date = dataAtual.toString();
+                Valores valores = new Valores(date, valorTotalPagarS,valorLitroS, valorOleoS, taxaS,
+                        litros, quantO, mensagem);
 
 
                 Map<String, Object> autoValores = new HashMap<>();
@@ -226,14 +221,17 @@ public class MainActivityResults extends AppCompatActivity {
                 autoValores.put("Taxa", valores.getValorTaxa());
                 autoValores.put("Litros", valores.getQuantidadeL());
                 autoValores.put("QuantidadeOleo", valores.getQuantidadeO());
-                autoValores.put("Mensagem", valores.getMensagem());
-                autoValores.put("Data", dataAtual.toString());
-                autoValores.put("NomeAlto", nome);
+                autoValores.put("mensagem", mensagem);
+                autoValores.put("date", date);
+                autoValores.put("NomeAuto", nome);
                 autoValores.put("idCarro", idValor);
                 autoValores.put("valorTotal", valorTotalPagarS);
-                gerarPDF(descAuto, valorTotalPagarS,dataAtual, nome,valorLitroS, valorOleoS, taxaS, litros, quantO, tResultados);
+                PDF pdf = new PDF();
+                pdf.gerarPDF(descAuto, valorTotalPagarS,dataAtual, nome,valorLitroS, valorOleoS, taxaS, litros, quantO, mensagem);
 
-                DocumentReference documentReferenceValor = autenticacaoUserBD.collection("HistoricoValores").document(dataAtual.toString());
+
+
+                DocumentReference documentReferenceValor = autenticacaoUserBD.collection("HistoricoValores").document(date);
                 documentReferenceValor.set(autoValores).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -250,8 +248,9 @@ public class MainActivityResults extends AppCompatActivity {
                 });
 
             }
-        });
-        confirmarIncluir.create().show();
+
+        });confirmarSalvar.create().show();
+
 
         return index;
 
@@ -278,79 +277,5 @@ public class MainActivityResults extends AppCompatActivity {
         inserirPhone.create().show();
     }
 
-    public void gerarPDF(String desc, String valorTotals, Date date,String auto,String valorLitroS, String valorOleoS, String taxaS, String litros, String quantO, String tResultados) {
 
-
-        PdfDocument documentoPDF = new PdfDocument();
-
-        PdfDocument.PageInfo detalhePage =
-                new PdfDocument.PageInfo.Builder(300, 400, 1).create();
-
-        PdfDocument.Page novaPagina = documentoPDF.startPage(detalhePage);
-
-        Canvas canvas = novaPagina.getCanvas();
-
-        Paint corTexto = new Paint();
-        corTexto.setColor(Color.BLACK);
-
-        Paint corTexto2 = new Paint();
-        corTexto2.setColor(Color.GRAY);
-
-        String autoDPF = "Nome do Auto";
-        String litroPDF = "Valor do Litro R$ ";
-        String oleoPDF = "Valor do Óleo R$ ";
-        String taxaPDF = "Taxa cobrada R$ ";
-        String quantLitroPDF = "Litros abastecidos ";
-        String quantOleoPDF = "Oleo abastecidos ";
-        String dataPDF = "Data do abastecimento";
-        String valorTotalPDF = "Total à Pagar R$ ";
-        String descPDF = "Descrição do Auto";
-
-        canvas.drawText(dataPDF,30,60,corTexto2);
-        canvas.drawText(date.toString(), 30, 75, corTexto);
-
-
-        canvas.drawText(autoDPF,30,100,corTexto2);
-        canvas.drawText(auto, 180, 100, corTexto);
-
-        canvas.drawText(litroPDF,30,120,corTexto2);
-        canvas.drawText(valorLitroS, 180, 120, corTexto);
-
-        canvas.drawText(oleoPDF,30,140,corTexto2);
-        canvas.drawText(valorOleoS, 180, 140, corTexto);
-
-        canvas.drawText(taxaPDF,30,160,corTexto2);
-        canvas.drawText(taxaS, 180, 160, corTexto);
-
-        canvas.drawText(quantLitroPDF,30,180,corTexto2);
-        canvas.drawText(litros, 180, 180, corTexto);
-
-        canvas.drawText(quantOleoPDF,30,200,corTexto2);
-        canvas.drawText(quantO, 180, 200, corTexto);
-
-        canvas.drawText(valorTotalPDF,30,220,corTexto2);
-        canvas.drawText(valorTotals, 180, 220, corTexto);
-
-        canvas.drawText(descPDF,30,260,corTexto2);
-        canvas.drawText(desc, 30, 275, corTexto);
-
-
-
-        documentoPDF.finishPage(novaPagina);
-
-        String targetPDF = "/sdcard/Documents/pdf/pdfNovoArquivo.pdf";
-        File filePath = new File(targetPDF);
-
-        try {
-            documentoPDF.writeTo(new FileOutputStream(filePath));
-            Toast.makeText(this, "PDF Gerado com sucesso", Toast.LENGTH_LONG);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "PDF Error", Toast.LENGTH_LONG);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "PDF Error02", Toast.LENGTH_LONG);
-        }
-        documentoPDF.close();
-    }
 }

@@ -161,7 +161,8 @@ public class MainActivityCadastrar extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         Log.i("Test_URL",uri.toString());
                         final String receberPhoto = uri.toString();
-                        salvarAutos( receberPhoto);
+                        String photoKey = randomKey;
+                        salvarAutos( receberPhoto, photoKey);
                     }
                 });
                 pd.dismiss();
@@ -183,12 +184,13 @@ public class MainActivityCadastrar extends AppCompatActivity {
 
     }
 
-    private void salvarAutos(String receberPhoto){
+    private void salvarAutos(String receberPhoto, String photokEY){
         Autos autos = new Autos();
         autos.setAuto(nome.getText().toString());
 
         if(receberPhoto!=null){
             autos.setPhoto(receberPhoto);
+            autos.setPhotoKey(photokEY);
         }
         if(descricao!=null){
             autos.setDesc(descricao.getText().toString());
@@ -211,6 +213,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
         autoMoveis.put("id",autos.getId());
         autoMoveis.put("desc",autos.getDesc());
         autoMoveis.put("photo",autos.getPhoto());
+        autoMoveis.put("photoKey",autos.getPhotoKey());
 
         if(TextUtils.isEmpty(autos.getClube())){
             autoMoveis.put("outros", autos.getOutros());
