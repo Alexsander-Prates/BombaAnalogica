@@ -4,7 +4,8 @@
 
     <item
         android:id="@+id/itemLogar"
-        android:title="@string/login"
+        android:title="Calcular"
+        android:icon="@drawable/counter"
         app:showAsAction="ifRoom"
 
         />

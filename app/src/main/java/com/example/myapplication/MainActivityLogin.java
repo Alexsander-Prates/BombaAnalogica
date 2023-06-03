@@ -2,10 +2,10 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+
 
 import android.content.Intent;
-import android.graphics.drawable.VectorDrawable;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -18,7 +18,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
+
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,8 +30,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Vector;
-
 import Util.ConfigBD;
 import model.User;
 
@@ -40,7 +38,6 @@ public class MainActivityLogin extends AppCompatActivity {
 
     private CheckBox verSenha;
     private boolean verificadorLogin = false;
-    private User user;
     private FirebaseAuth autenticacao;
     private EditText emailLogin, senhaLogin;
     private TextView createUser;
@@ -58,6 +55,7 @@ public class MainActivityLogin extends AppCompatActivity {
         setContentView(binding.getRoot());
         inicilializarLigacoes();
         MostrarSenhaDigitada();
+
 
 
 
@@ -86,14 +84,16 @@ public class MainActivityLogin extends AppCompatActivity {
         createUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), MainActivityCreateLogin.class);
-                startActivity(intent);
+                Toast.makeText(MainActivityLogin.this, "Em manutenção", Toast.LENGTH_SHORT).show();
+                //Intent intent = new Intent(getApplicationContext(), MainActivityCreateLogin.class);
+                //startActivity(intent);
 
             }
         });
 
 
     }
+
 
     private void AutenticarUser() {
 
@@ -147,36 +147,26 @@ public class MainActivityLogin extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_cadastros, menu);
-
+        getMenuInflater().inflate(R.menu.menu_login,menu);
 
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(verificadorLogin ==false){
-            Toast.makeText(MainActivityLogin.this, mensagensErros[3], Toast.LENGTH_SHORT).show();
-        } else{
-            switch (item.getItemId()){
 
-                case R.id.itemCadastrar:
-                    Intent intent2 = new Intent(getApplicationContext(), MainActivityCadastrar.class);
-                    startActivity(intent2);
-                    break;
-                case R.id.itemExcluir:
-                    Intent intent3= new Intent(getApplicationContext(), MainActivityExcluir.class);
-                    startActivity(intent3);
-                    break;
-        }
-
+        switch (item.getItemId()){
+            case R.id.itemLogar:
+                Intent intent2 = new Intent(getApplicationContext(), MainActivityValues.class);
+                startActivity(intent2);
+                break;
 
         }
 
         return super.onOptionsItemSelected(item);
-
-
     }
+
+
 
     private void inicilializarLigacoes(){
         emailLogin = binding.editEmail;

@@ -24,7 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.058"
-            app:srcCompat="@drawable/delete" />
+            app:srcCompat="@drawable/ic_swipe" />
 
         <ImageButton
 
@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_baseline_info"
-            android:padding="3dp"
+            android:padding="0dp"
             />
 
         <com.tsuryo.swipeablerv.SwipeableRecyclerView

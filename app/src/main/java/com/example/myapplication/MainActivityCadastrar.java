@@ -4,13 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.FileProvider;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -21,9 +27,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.anstrontechnologies.corehelper.AnstronCoreHelper;
 import com.example.myapplication.databinding.ActivityMainCadastrarBinding;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,6 +37,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,23 +45,46 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.iceteck.silicompressorr.FileUtils;
+import com.iceteck.silicompressorr.SiliCompressor;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+import com.squareup.picasso.RequestCreator;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import java.io.IOException;
+
+
+import java.net.URI;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import Util.ConfigBD;
+
+import id.zelory.compressor.Compressor;
 import model.Autos;
+
 
 public class MainActivityCadastrar extends AppCompatActivity {
 
     private ActivityMainCadastrarBinding binding;
 
     FirebaseFirestore autenticacaoUserBD = ConfigBD.FirebaseCadastroUser();
-    CollectionReference meusAutos = autenticacaoUserBD.collection("AutosCadastro");
+
+
     FirebaseStorage storage;
     StorageReference storageReference;
+
+    FirebaseAuth autenticacaoAuth = ConfigBD.FirebaseAutentic();
+
 
     private Uri photoUri;
     private ImageView photoAuto;
@@ -65,14 +95,12 @@ public class MainActivityCadastrar extends AppCompatActivity {
     String pNome, pDesc, pOutros, pClube, pId;
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainCadastrarBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -81,6 +109,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
         inicializarLigacoes();
         irShowData();
         receberDadosCadastroAuto();
+        askPermission();
 
 
         btnCadastrarAuto.setOnClickListener(new View.OnClickListener() {
@@ -118,32 +147,74 @@ public class MainActivityCadastrar extends AppCompatActivity {
         });
     }
 
+    private void askPermission() {
+        Dexter.withContext(this).withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE).withListener(new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                permissionToken.continuePermissionRequest();
+            }
+        }).check();
+
+    }
+
     private void selectPhoto() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, 0 );
+
+        try{
+
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent, 0 );
+
+        }catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==0 ){
-            photoUri = data.getData();
-            Bitmap bitmap = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photoUri);
-                photoAuto.setImageDrawable(new BitmapDrawable(bitmap));
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+
+            if(requestCode==0 ){
+                photoUri = data.getData();
+
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photoUri);
+                    photoAuto.setImageDrawable(new BitmapDrawable(bitmap));
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
 
-
+        }catch (NullPointerException e){
 
         }
+
     }
 
     private void inserirPhoto() {
+
+        byte[] bytes = new byte[0];
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),photoUri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG,0,byteArrayOutputStream);
+            bytes = byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         final ProgressDialog pd = new ProgressDialog(this);
         pd.setTitle("Up Photo");
@@ -151,9 +222,13 @@ public class MainActivityCadastrar extends AppCompatActivity {
 
 
         final String randomKey = UUID.randomUUID().toString();
-        StorageReference riversRef = storageReference.child("images/" + randomKey);
+        String nome = autenticacaoAuth.getCurrentUser().getEmail() + "/";
+        String teste = "images ";
+        String nomePastaPhoto = teste + nome;
+        StorageReference riversRef = storageReference.child(nomePastaPhoto + randomKey);
 
-        riversRef.putFile(photoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+        riversRef.putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -163,6 +238,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
                         final String receberPhoto = uri.toString();
                         String photoKey = randomKey;
                         salvarAutos( receberPhoto, photoKey);
+
                     }
                 });
                 pd.dismiss();
@@ -181,7 +257,6 @@ public class MainActivityCadastrar extends AppCompatActivity {
                 pd.setMessage("Percentage: " + (int) progressPercent + "%");
             }
         });
-
     }
 
     private void salvarAutos(String receberPhoto, String photokEY){
@@ -214,6 +289,8 @@ public class MainActivityCadastrar extends AppCompatActivity {
         autoMoveis.put("desc",autos.getDesc());
         autoMoveis.put("photo",autos.getPhoto());
         autoMoveis.put("photoKey",autos.getPhotoKey());
+        autoMoveis.put("adm",autenticacaoAuth.getCurrentUser().getUid());
+
 
         if(TextUtils.isEmpty(autos.getClube())){
             autoMoveis.put("outros", autos.getOutros());
@@ -221,7 +298,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
             autoMoveis.put("clube",autos.getClube());
         }
 
-        DocumentReference documentReference = autenticacaoUserBD.collection("AutosCadastro").document(autos.getAuto());
+        DocumentReference documentReference = autenticacaoUserBD.collection("Autos - " + autenticacaoAuth.getCurrentUser().getEmail()).document(autos.getAuto());
         documentReference.set(autoMoveis).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -306,6 +383,8 @@ public class MainActivityCadastrar extends AppCompatActivity {
         String upClube = "Clube";
         String upOutros = "Outros";
 
+        CollectionReference meusAutos = autenticacaoUserBD.collection("Autos - " + autenticacaoAuth.getCurrentUser().getEmail());
+
         meusAutos.document(pNome).update("auto",upNome,
                 "desc",upDesc).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -320,6 +399,4 @@ public class MainActivityCadastrar extends AppCompatActivity {
         });
 
     }
-
-
 }

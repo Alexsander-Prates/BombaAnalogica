@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -13,17 +15,21 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 
 
 import com.example.myapplication.databinding.ActivityMainExcluirBinding;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -38,11 +44,15 @@ import model.Autos;
 
 public class MainActivityExcluir extends AppCompatActivity {
 
-    FirebaseFirestore autenticacaoUserBD = ConfigBD.FirebaseCadastroUser();
-    CollectionReference meusAutos = autenticacaoUserBD.collection("AutosCadastro");
+    FirebaseAuth autenticacaoAuth = ConfigBD.FirebaseAutentic();
 
-    FirebaseStorage storage;
-    StorageReference storageReference;
+    FirebaseFirestore autenticacaoUserBD = ConfigBD.FirebaseCadastroUser();
+    CollectionReference meusAutos = autenticacaoUserBD.collection("Autos - " + autenticacaoAuth.getCurrentUser().getEmail());
+    CollectionReference meusHistorics = autenticacaoUserBD.collection("HistoricoValores");
+
+    FirebaseStorage storage = ConfigBD.FirebaseCadastroStorage();
+    StorageReference storageReference = storage.getReference();
+
 
 
 
@@ -54,14 +64,13 @@ public class MainActivityExcluir extends AppCompatActivity {
 
 
     private ActivityMainExcluirBinding binding;
+    private ImageButton informativo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainExcluirBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
 
         inicilializarLigacoes();
 
@@ -79,11 +88,22 @@ public class MainActivityExcluir extends AppCompatActivity {
         irShowCadastros();
 
 
+
+        informativo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                info();
+            }
+        });
+
+
+
     }
+
 
     private void iniciarListener() {
         userArrayList.clear();
-        meusAutos.orderBy("auto", Query.Direction.ASCENDING)
+        meusAutos.whereEqualTo("adm",autenticacaoAuth.getCurrentUser().getUid())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -108,6 +128,7 @@ public class MainActivityExcluir extends AppCompatActivity {
                             }
 
                             adapter.notifyDataSetChanged();
+
 
                         }
                     }
@@ -175,24 +196,28 @@ public class MainActivityExcluir extends AppCompatActivity {
     private void inicilializarLigacoes(){
         listaDeItens = binding.recyclerListItens;
         btShowCadastros = binding.btnExcluir;
+        informativo = binding.informativo;
 
     }
 
 
     private void deletDados(int index) {
+        String auto = userArrayList.get(index).getAuto();
+        String idCarro = userArrayList.get(index).getId();
         AlertDialog.Builder confirmarExcluir = new AlertDialog.Builder(this);
         confirmarExcluir.setTitle("Atenção");
-        confirmarExcluir.setMessage("Deseja excluir?" +userArrayList.get(index).getAuto());
+        confirmarExcluir.setMessage("Deseja excluir?" + auto);
         confirmarExcluir.setCancelable(false);
         confirmarExcluir.setNegativeButton("Cancelar",null);
         confirmarExcluir.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                meusAutos.document(userArrayList.get(index).getAuto()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                meusAutos.document(auto).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                excluirPhoto(index);
+                                excluirPhotoAndHistoric(index,idCarro);
                                 userArrayList.remove(index);
+                                adapter.notifyDataSetChanged();
 
                                 iniciarListener();
                                 Log.d("DB_DELETE","Excluido com sucesso");
@@ -210,6 +235,7 @@ public class MainActivityExcluir extends AppCompatActivity {
 
     }
 
+
     private void irShowCadastros(){
         btShowCadastros.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -222,9 +248,14 @@ public class MainActivityExcluir extends AppCompatActivity {
 
 
 
-    private void excluirPhoto(int index){
+    private void excluirPhotoAndHistoric(int index,String idCarro){
         String atalho = userArrayList.get(index).getPhotoKey();
-        StorageReference storageRef = storageReference.child("images/" + atalho);
+
+        String nome = autenticacaoAuth.getCurrentUser().getEmail() + "/";
+        String teste = "images ";
+        String nomePastaPhoto = teste + nome;
+
+        StorageReference storageRef = storageReference.child(nomePastaPhoto + atalho);
         storageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
@@ -233,12 +264,44 @@ public class MainActivityExcluir extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d("StoreDelet","NÃOOOOOOOOOOOOOOOOOOOOOOO Foi deletado");
+                Log.d("StoreDelet","Não Foi deletado");
             }
         });
+        meusHistorics.whereEqualTo("idCarro",idCarro).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot document:task.getResult()){
+                        meusHistorics.document(document.getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Log.d("Historic","Foi deletado historio");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d("Historic","Não Foi deletado historio");
+                            }
+                        });
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+
     }
 
-
-
-
+    private void info(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Atenção");
+        alertDialog.setMessage("Para excluir arraste o cartão do Auto desejada para esquerda." +
+                " Para editalo arrasteo para direita");
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton("Ok",null);
+        alertDialog.show();
+    }
 }

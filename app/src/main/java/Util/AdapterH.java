@@ -38,14 +38,6 @@ public class AdapterH extends RecyclerView.Adapter<AdapterH.MyViewHolderH> {
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolderH holder, int position) {
-        FirebaseFirestore autenticacaoUserBD = ConfigBD.FirebaseCadastroUser();
-        CollectionReference historicsAutos = autenticacaoUserBD.collection("HistoricoValores");
-        Valores valores = valorArrayList.get(position);
-
-
-        holder.valorTotal.setText(valores.getValorTotal());
-        holder.mensagem.setText(valores.getMensagem());
-        holder.date.setText(valores.getDate());
 
         Valores valores = valorArrayList.get(position);
 

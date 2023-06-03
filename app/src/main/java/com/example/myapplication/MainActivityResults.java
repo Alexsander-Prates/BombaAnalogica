@@ -6,14 +6,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.Manifest;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 
-import android.graphics.pdf.PdfDocument;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +20,7 @@ import android.widget.Toast;
 import com.example.myapplication.databinding.ActivityMainResultsBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -32,18 +28,22 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.tsuryo.swipeablerv.SwipeLeftRightCallback;
 import com.tsuryo.swipeablerv.SwipeableRecyclerView;
 
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Date;
 
@@ -56,8 +56,13 @@ import model.Valores;
 
 public class MainActivityResults extends AppCompatActivity {
 
+    FirebaseAuth autenticacaoAuth = ConfigBD.FirebaseAutentic();
+
     FirebaseFirestore autenticacaoUserBD = ConfigBD.FirebaseCadastroUser();
-    CollectionReference meusAutos = autenticacaoUserBD.collection("AutosCadastro");
+    CollectionReference meusAutos = autenticacaoUserBD.collection("Autos - " + autenticacaoAuth.getCurrentUser().getEmail());
+
+    FirebaseFirestore autenticacaoHistoric = ConfigBD.FirebaseCadastroUser();
+
 
 
 
@@ -66,8 +71,10 @@ public class MainActivityResults extends AppCompatActivity {
     Adapter adapter;
     private SwipeableRecyclerView listaDeItens;
     private TextView valorLitro, valorOleo, totalPagar, tTaxa;
-    double taxa;
+    private Float taxa;
     ImageButton info;
+    DecimalFormat df = new DecimalFormat("R$ #,##0.00");
+
 
 
     @Override
@@ -102,7 +109,7 @@ public class MainActivityResults extends AppCompatActivity {
 
     private void iniciarListener() {
         userArrayList.clear();
-        meusAutos.orderBy("auto", Query.Direction.ASCENDING)
+        meusAutos.whereEqualTo("adm",autenticacaoAuth.getCurrentUser().getUid())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -167,11 +174,14 @@ public class MainActivityResults extends AppCompatActivity {
         String valorLitroR = getIntent().getStringExtra("valorLitro");
         String valorOleoR = getIntent().getStringExtra("valorOleo");
         String valorTotalPagar = getIntent().getStringExtra("valorTotal");
+        String taxaAdm = getIntent().getStringExtra("taxaAdm");
+
+        String totalFormat = df.format(Float.parseFloat(valorTotalPagar));
 
         valorLitro.setText(valorLitroR);
         valorOleo.setText(valorOleoR);
-        totalPagar.setText(valorTotalPagar);
-        taxa = (Float.parseFloat(totalPagar.getText().toString()) * 0.15);
+        totalPagar.setText(totalFormat);
+        taxa = Float.parseFloat(taxaAdm)*100;
         tTaxa.setText(String.valueOf(taxa));
     }
 
@@ -179,9 +189,9 @@ public class MainActivityResults extends AppCompatActivity {
         AlertDialog.Builder confirmarIncluir = new AlertDialog.Builder(this);
         confirmarIncluir.setTitle("Atenção");
         confirmarIncluir.setMessage("Para vincular os valores ao auto será necessário selecionar" +
-                "selecionar o auto puxando da direita para esquerda e" +
+                " o auto puxando da direita para esquerda e " +
                 "clicar em vincular valores. Caso queira enviar ao cliente, após vincular o valor" +
-                "você deverá clicar no botão enviar.");
+                " você pode acessar seus Arquivos - Download.");
         confirmarIncluir.setCancelable(false);
         confirmarIncluir.setPositiveButton("Ok", null);
         confirmarIncluir.create().show();
@@ -191,10 +201,14 @@ public class MainActivityResults extends AppCompatActivity {
     public int salvarValoresAuto(int index) {
         String valorLitroS = getIntent().getStringExtra("valorLitro");
         String valorOleoS = getIntent().getStringExtra("valorOleo");
-        String valorTotalPagarS = getIntent().getStringExtra("valorTotal");
+        String valorTotalPagarS = df.format(Float.parseFloat(getIntent().getStringExtra("valorTotal")));
+
         String litros = getIntent().getStringExtra("litros");
         String quantO = getIntent().getStringExtra("quantO");
-        String mensagem = getIntent().getStringExtra("mensagem");
+
+        String mensagemDesformatar = getIntent().getStringExtra("mensagem");
+        String mensagemTirarEspaco = mensagemDesformatar.replace("\n","");
+        String mensagem = mensagemTirarEspaco.replace("   ","");
 
         AlertDialog.Builder confirmarSalvar = new AlertDialog.Builder(this);
         confirmarSalvar.setTitle("Atenção");
@@ -205,9 +219,13 @@ public class MainActivityResults extends AppCompatActivity {
         confirmarSalvar.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String taxaS = String.valueOf(taxa);
+                String taxaS = (df.format(taxa));
                 Date dataAtual = new Date();
-                String date = dataAtual.toString();
+
+                SimpleDateFormat formatoData = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy 'às' HH: mm: ss", new Locale("pt", "BR"));
+                String dateFim = formatoData.format(dataAtual);
+                String date = dateFim;
+
                 Valores valores = new Valores(date, valorTotalPagarS,valorLitroS, valorOleoS, taxaS,
                         litros, quantO, mensagem);
 
@@ -226,17 +244,19 @@ public class MainActivityResults extends AppCompatActivity {
                 autoValores.put("NomeAuto", nome);
                 autoValores.put("idCarro", idValor);
                 autoValores.put("valorTotal", valorTotalPagarS);
-                PDF pdf = new PDF();
-                pdf.gerarPDF(descAuto, valorTotalPagarS,dataAtual, nome,valorLitroS, valorOleoS, taxaS, litros, quantO, mensagem);
+
+                criarPDF(descAuto,valorTotalPagarS,dataAtual,nome,valorLitroS,valorOleoS,taxaS,litros,quantO,mensagem);
 
 
 
-                DocumentReference documentReferenceValor = autenticacaoUserBD.collection("HistoricoValores").document(date);
+
+                DocumentReference documentReferenceValor = autenticacaoUserBD.collection("HistoricoValores").document(nome + " - " + date);
                 documentReferenceValor.set(autoValores).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Log.d("db", "Salvado com sucesso");
                         Toast.makeText(MainActivityResults.this, "Cadastro de Valores realizado com sucesso", Toast.LENGTH_SHORT).show();
+
                         //enviarValoresWhats();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
@@ -246,36 +266,67 @@ public class MainActivityResults extends AppCompatActivity {
                         Toast.makeText(MainActivityResults.this, "Cadastro nao realizado", Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
 
         });confirmarSalvar.create().show();
-
 
         return index;
 
     }
 
+    public void criarPDF(String descAuto,String valorTotalPagarS,Date dataAtual,String nome,String valorLitroS,String valorOleoS,String taxaS,String litros,String quantO,String mensagem){
 
-    //chamar dentro do onSucesso vincularDados;
-    private void enviarValoresWhats() {
+        AlertDialog.Builder confirmarPDF = new AlertDialog.Builder(this);
+        confirmarPDF.setTitle("Atenção");
+        confirmarPDF.setMessage("Você deseja criar um PDF com os resultados?" +
+                "Clique em Ok para continuar ou Não para cancelar");
+        confirmarPDF.setCancelable(false);
+        confirmarPDF.setNegativeButton("Cancelar", null);
+        confirmarPDF.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                PDF pdf = new PDF();
+                pdf.gerarPDF(descAuto, valorTotalPagarS,dataAtual, nome,valorLitroS, valorOleoS, taxaS, litros, quantO, mensagem);
+            }
+        });
+
+        confirmarPDF.create().show();
+    }
+
+
+
+    /*private void enviarValoresWhats() {
         AlertDialog.Builder inserirPhone = new AlertDialog.Builder(this);
         inserirPhone.setTitle("Atenção");
-        inserirPhone.setMessage("Vocẽ deve incluir um telefone");
+        inserirPhone.setMessage("Vocẽ deseja enviar o PDF pelo Whatsapp? Favor, insirá uma número");
         inserirPhone.setCancelable(false);
         inserirPhone.setNegativeButton("Cancelar", null);
+        EditText phone = new EditText(this);
+        LinearLayout.LayoutParams linearLayout = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        phone.setLayoutParams(linearLayout);
+        inserirPhone.setView(phone);
+
+
         inserirPhone.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String url = "https://api.whatsapp.com/send?phone ="; //+dialog com camp pegar numero
+                pdfUri=getIntent().getData();
+                String url = "https://api.whatsapp.w4b.com/send?phone ="; //+dialog com camp pegar numero
                 Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.putExtra(Intent.EXTRA_STREAM,pdfUri);
+                intent.setType("application/pdf");
                 intent.setData(Uri.parse(url));
                 startActivity(intent);
+
+
+
             }
         });
 
         inserirPhone.create().show();
-    }
+    }*/
 
 
 }

@@ -2,12 +2,13 @@ package Util;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 public class ConfigBD {
 
     private static FirebaseAuth auth;
     private static FirebaseFirestore db;
-    private static FirebaseFirestore db2;
+    private static FirebaseStorage db2;
 
 
 
@@ -28,9 +29,9 @@ public class ConfigBD {
         return db;
     }
 
-    public static FirebaseFirestore FirebaseCadastroValor(){
+    public static FirebaseStorage FirebaseCadastroStorage(){
         if(db2==null){
-            db=FirebaseFirestore.getInstance();
+            db2=FirebaseStorage.getInstance();
         }
         return db2;
     }

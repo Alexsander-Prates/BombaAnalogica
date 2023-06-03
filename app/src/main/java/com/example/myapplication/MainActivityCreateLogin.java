@@ -43,7 +43,6 @@ public class MainActivityCreateLogin extends AppCompatActivity {
     private CheckBox verSenha;
     private FirebaseAuth autenticacao;
     private FirebaseFirestore autenticacaoUserBD;
-    private User user;
     private ActivityMainCreateLoginBinding binding;
 
     private EditText userNovo, emailNovo, senhaNovo, senhaConfirm;
@@ -133,10 +132,13 @@ public class MainActivityCreateLogin extends AppCompatActivity {
 
         autenticacaoUserBD=ConfigBD.FirebaseCadastroUser();
 
+        user.setUserID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         Map<String,Object> useres = new HashMap<>();
         useres.put("nome", user.getNome());
+        useres.put("id", user.getUserID());
 
-        user.setUserID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
 
         DocumentReference documentReference = autenticacaoUserBD.collection("Usuarios").document(user.getUserID());
         documentReference.set(useres).addOnSuccessListener(new OnSuccessListener<Void>() {

@@ -5,11 +5,13 @@
     <item
         android:id="@+id/itemCadastrar"
         android:title="@string/cadastrar"
+        android:icon="@drawable/database_add"
         app:showAsAction="ifRoom"
         />
     <item
         android:id="@+id/itemExcluir"
         android:title="@string/excluir"
+        android:icon="@drawable/database_show"
         app:showAsAction="ifRoom"
         />
 

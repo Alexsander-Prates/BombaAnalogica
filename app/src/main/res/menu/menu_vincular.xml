@@ -6,6 +6,7 @@
     <item
         android:id="@+id/itemVincular"
         android:title="@string/vincular"
+        android:icon="@drawable/database_vincular"
         app:showAsAction="ifRoom"
 
         />

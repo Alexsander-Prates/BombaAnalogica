@@ -58,5 +58,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.github.tsuryo:Swipeable-RecyclerView:1.1'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.karumi:dexter:6.2.2'
+    implementation 'id.zelory:compressor:2.1.1'
+    implementation 'com.github.abhidiwakar:AnstronCoreHelper:1.1'
+    implementation 'com.iceteck.silicompressorr:silicompressor:2.2.4'
 
 }

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.myapplication.databinding.ActivityMainCalculationsBinding;
 
+import java.text.DecimalFormat;
 
 
 public class MainActivityCalculations extends AppCompatActivity {
@@ -28,7 +29,9 @@ public class MainActivityCalculations extends AppCompatActivity {
     private TextView total;
     private AppCompatButton botaoCalcular;
     private Float valorLitro, valorOleo, totalPagar, litros,
-            leituraInicial, leituraFinal, quantOleo;
+            leituraInicial, leituraFinal, quantOleo, taxaAdm;
+    float valorGambiarra = 0;
+    DecimalFormat df = new DecimalFormat("0.00");
 
 
     @Override
@@ -39,8 +42,10 @@ public class MainActivityCalculations extends AppCompatActivity {
 
         valorLitro = Float.parseFloat(getIntent().getStringExtra("valorLitro"));
         valorOleo = Float.parseFloat(getIntent().getStringExtra("valorOleo"));
+        taxaAdm = Float.parseFloat(getIntent().getStringExtra("taxaAdm"));
 
         inicialicarLigacoes();
+
 
         if (valorLitro == 0) {
             Toast.makeText(MainActivityCalculations.this, "Preencha os campos quantidade de Óleo", Toast.LENGTH_LONG).show();
@@ -59,14 +64,19 @@ public class MainActivityCalculations extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                calculandoLitros();
+                try {
+                    calculandoLitros();
 
-                calculandoValores();
+                    calculandoValores();
 
-                resultados();
+                    resultados();
 
-                levarTelaResults();
+                    levarTelaResults();
 
+                }catch (NullPointerException nu){
+                    totalPagar=valorGambiarra;
+                    return;
+                }
 
             }
         });
@@ -76,68 +86,89 @@ public class MainActivityCalculations extends AppCompatActivity {
 
     //colocar esses verificadores dentro do oncreat
     public void calculandoLitros() {
-        if(leituraInic!=null || leituraFim!=null){
-            leituraInicial = Float.parseFloat(leituraInic.getText().toString());
-            leituraFinal = Float.parseFloat(leituraFim.getText().toString());
 
-            if (leituraFinal <= leituraInicial) {
-                Toast.makeText(MainActivityCalculations.this, "Leitura Inicial Maior que Final", Toast.LENGTH_LONG).show();
-                return;
+        try{
+
+            if((TextUtils.isEmpty(leituraInic.getText().toString()) && (TextUtils.isEmpty(leituraFim.getText().toString())))){
+                Toast.makeText(MainActivityCalculations.this, "Preencha os campos de leitura", Toast.LENGTH_LONG).show();
+
+            }else if((leituraInic.getText().toString()!=null) && (leituraFim.getText().toString()!=null)){
+                leituraInicial = Float.parseFloat(leituraInic.getText().toString());
+                leituraFinal = Float.parseFloat(leituraFim.getText().toString());
+
+                if (leituraFinal <= leituraInicial) {
+                    Toast.makeText(MainActivityCalculations.this, "Leitura Inicial Maior que Final", Toast.LENGTH_LONG).show();
+                    return;
+                } else {
+                    litros = ((leituraFinal - leituraInicial) / 10);
+                }
+
             } else {
-                litros = ((leituraFinal - leituraInicial) / 10);
+                leituraInic.setText("0");
+                leituraFim.setText("0");
+                Toast.makeText(MainActivityCalculations.this, "Digite a quantidade de Óleos", Toast.LENGTH_LONG).show();
+
             }
 
-        } else {
-            leituraInic.setText("0");
-            leituraFim.setText("0");
-            Toast.makeText(MainActivityCalculations.this, "Digite a quantidade de Óleos", Toast.LENGTH_LONG).show();
 
+        }catch (NumberFormatException e){
+            Toast.makeText(MainActivityCalculations.this, "tenete preencher os dados novamente", Toast.LENGTH_LONG).show();
         }
+
 
     }
 
     public float calculandoValores() {
 
+        try {
 
-        float valorGambiarra = 0;
+            taxaAdm=taxaAdm/100;
+
+            if (valorOleo==0) {
+                totalPagar = (litros * valorLitro);
+                quantOleo=valorGambiarra;
+
+            } else if (valorLitro==0) {
+                quantOleo = Float.parseFloat(quantOl.getText().toString());
+                totalPagar = quantOleo * valorOleo;
+                litros=valorGambiarra;
+
+            } else {
+                quantOleo = Float.parseFloat(quantOl.getText().toString());
+                totalPagar = (litros * valorLitro);
+                totalPagar += quantOleo * valorOleo;
+            }
 
 
-        if (valorOleo==0) {
-            totalPagar = (litros * valorLitro);
-            quantOleo=valorGambiarra;
 
-        } else if (valorLitro==0) {
-            quantOleo = Float.parseFloat(quantOl.getText().toString());
-            totalPagar = quantOleo * valorOleo;
-            litros=valorGambiarra;
-
-        } else {
-            quantOleo = Float.parseFloat(quantOl.getText().toString());
-            totalPagar = (litros * valorLitro);
-            totalPagar += quantOleo * valorOleo;
+        }catch (NumberFormatException e){
+            Toast.makeText(MainActivityCalculations.this, "Preencha os dados novamente", Toast.LENGTH_LONG).show();
         }
-        return totalPagar;
 
+
+        return totalPagar+=taxaAdm*totalPagar;
     }
 
     public String resultados() {
-        calculandoValores();
+
+        df.format(totalPagar);
+
         if ((valorLitro != null) && (valorOleo == 0)) {
             tResultados = "   Valor do Litro R$: " + valorLitro;
-            tResultados = tResultados + "   \n  " + litros + "   L";
+            tResultados = tResultados + "   \n  " + litros + "Litros";
             tResultados = tResultados + "   \n" + "   Valor Total à pagar R$: " + totalPagar;
 
         } else if ((valorOleo != null) && (valorLitro == 0)) {
             tResultados = "   Valor do Óleo R$: " + valorOleo;
-            tResultados = tResultados + "   \n  " + quantOleo + "   Óleo(s)";
+            tResultados = tResultados + "   \n  " + quantOleo + "Óleo(s)";
             tResultados = tResultados + "   \n" + "   Valor Total à pagar R$: " + totalPagar;
 
         } else {
             tResultados = "   Valor do Litro R$: " + valorLitro;
-            tResultados = tResultados + "   \n  " + litros + "   L";
+            tResultados = tResultados + "    \n  " + litros + " Litros";
             tResultados = tResultados + "   \n" + "   Valor do Óleo R$: " + valorOleo;
-            tResultados = tResultados + "   \n  " + quantOleo + "   Óleo(s)";
-            tResultados = tResultados + "   \n" + "   Valor Total à pagar R$: " + totalPagar;
+            tResultados = tResultados + "    \n   " + quantOleo + " Óleo(s)";
+            tResultados = tResultados + "   \n" + "   Valor Total à pagar R$:" + totalPagar;
 
         }
         total.setText(tResultados);
@@ -170,8 +201,14 @@ public class MainActivityCalculations extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.itemVincular:
+                try {
+                    levarTelaResults();
+                }catch (NullPointerException e){
 
-                levarTelaResults();
+
+
+                }Toast.makeText(MainActivityCalculations.this, "Preencha os dados novamente", Toast.LENGTH_LONG).show();
+
 
                 break;
 
@@ -185,7 +222,7 @@ public class MainActivityCalculations extends AppCompatActivity {
 
         AlertDialog.Builder confirmarIncluir = new AlertDialog.Builder(this);
         confirmarIncluir.setTitle("Atenção");
-        confirmarIncluir.setMessage("Deseja incular valores?");
+        confirmarIncluir.setMessage("Deseja vincular valores ao auto?");
         confirmarIncluir.setCancelable(false);
         confirmarIncluir.setNegativeButton("Cancelar", null);
 
@@ -200,7 +237,9 @@ public class MainActivityCalculations extends AppCompatActivity {
                     intent2.putExtra("mensagem",tResultados);
                     intent2.putExtra("litros",litros.toString());
                     intent2.putExtra("quantO",quantOleo.toString());
+                    intent2.putExtra("taxaAdm",taxaAdm.toString());
                     startActivity(intent2);
+
                 } else{
                     Toast.makeText(MainActivityCalculations.this, "Calcule as quantidades", Toast.LENGTH_LONG).show();
                 }

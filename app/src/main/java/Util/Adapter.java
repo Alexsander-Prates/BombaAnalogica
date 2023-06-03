@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.myapplication.MainActivityCalculations;
+import com.example.myapplication.MainActivityExcluir;
 import com.example.myapplication.MainActivityHistorics;
 import com.example.myapplication.R;
 
@@ -86,8 +87,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
                 Intent intent = new Intent(context.getApplicationContext(),MainActivityHistorics.class);
                 intent.putExtra("id",id);
                 intent.putExtra("nomeAuto",nome);
-
                 context.startActivity(intent);
+
             }
         });
 

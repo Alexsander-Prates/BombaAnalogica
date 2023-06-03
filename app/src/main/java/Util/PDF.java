@@ -1,21 +1,29 @@
 package Util;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
 import android.os.Environment;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+
+import com.example.myapplication.MainActivityResults;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
-import java.util.Random;
-import java.util.UUID;
+import java.util.List;
 
 import model.Valores;
 
@@ -40,14 +48,10 @@ public class PDF extends Valores {
 
     public void gerarPDF(String desc, String valorTotals, Date date,String auto,String valorLitroS, String valorOleoS, String taxaS, String litros, String quantO, String mensagem) {
 
-
         PdfDocument documentoPDF = new PdfDocument();
-
-        PdfDocument.PageInfo detalhePage =
-                new PdfDocument.PageInfo.Builder(300, 400, 1).create();
+        PdfDocument.PageInfo detalhePage = new PdfDocument.PageInfo.Builder(300, 400, 1).create();
 
         PdfDocument.Page novaPagina = documentoPDF.startPage(detalhePage);
-
         Canvas canvas = novaPagina.getCanvas();
 
         Paint corTexto = new Paint();
@@ -59,7 +63,7 @@ public class PDF extends Valores {
         String autoDPF = "Nome do Auto";
         String litroPDF = "Valor do Litro R$ ";
         String oleoPDF = "Valor do Óleo R$ ";
-        String taxaPDF = "Taxa cobrada R$ ";
+        String taxaPDF = "Taxa % ";
         String quantLitroPDF = "Litros abastecidos ";
         String quantOleoPDF = "Oleo abastecidos ";
         String dataPDF = "Data do abastecimento";
@@ -68,7 +72,6 @@ public class PDF extends Valores {
 
         canvas.drawText(dataPDF,30,60,corTexto2);
         canvas.drawText(date.toString(), 30, 75, corTexto);
-
 
         canvas.drawText(autoDPF,30,100,corTexto2);
         canvas.drawText(auto, 180, 100, corTexto);
@@ -98,8 +101,11 @@ public class PDF extends Valores {
 
         documentoPDF.finishPage(novaPagina);
 
-
-        File pasta = new File(Environment.getExternalStorageDirectory() + "/Download");
+        asPermissions();
+        File pasta = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/myPDF");
+        if(!pasta.exists()){
+            pasta.mkdir();
+        }
         nomeFile = date.toString();
         salvarPDF(documentoPDF,nomeFile, pasta);
 
@@ -121,6 +127,22 @@ public class PDF extends Valores {
             e.printStackTrace();
         }
 
+
+    }
+
+    private void asPermissions(){
+        Dexter.withContext(this.context).withPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE).withListener(new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                permissionToken.continuePermissionRequest();
+            }
+        }).check();
 
     }
 }
