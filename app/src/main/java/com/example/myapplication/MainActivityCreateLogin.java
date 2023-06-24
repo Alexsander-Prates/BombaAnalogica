@@ -19,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -71,6 +72,7 @@ public class MainActivityCreateLogin extends AppCompatActivity {
 
     private EditText userNovo, emailNovo, senhaNovo, senhaConfirm , pix;
     private AppCompatButton btnCadastrarNovo;
+    private TextView btnCadastrarProp;
     private ProgressBar load;
 
     private String[] mensagens = {"Preencha dotos os campos", "Cadastro realizado com sucesso", "Usuário salvo","Error User"};
@@ -126,6 +128,15 @@ public class MainActivityCreateLogin extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 selectPhoto();
+            }
+        });
+
+        btnCadastrarProp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),MainActivityCadastrarProp.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -296,6 +307,7 @@ public class MainActivityCreateLogin extends AppCompatActivity {
         verSenha = binding.chekSenhaCreatLogin;
         pix = binding.editPix;
         photoCadastro = binding.imageView4;
+        btnCadastrarProp = binding.btnNovoCadastroProp;
 
     }
 

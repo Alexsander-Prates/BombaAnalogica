@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".MainActivityCadastrarProp">
+
+    <EditText
+        android:id="@+id/editUserProp"
+        style="@style/Edit_TextLogin"
+        android:layout_width="310dp"
+        android:layout_height="65dp"
+        android:drawableRight="@drawable/icon_add"
+        android:ems="10"
+        android:hint="@string/cadastrarNovoProp"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.166" />
+
+    <EditText
+        android:id="@+id/editSenhaCreateProp"
+        style="@style/Edit_TextLetras"
+        android:layout_width="309dp"
+        android:layout_height="67dp"
+        android:drawableRight="@drawable/ic_eye"
+        android:ems="10"
+        android:hint="@string/senha"
+        android:inputType="textPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editUserProp" />
+
+    <EditText
+        android:id="@+id/editSenhaCreatePropConfirm"
+        style="@style/Edit_TextLetras"
+        android:layout_width="309dp"
+        android:layout_height="67dp"
+        android:drawableRight="@drawable/ic_eye"
+        android:ems="10"
+        android:hint="@string/confirmarSenha"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editSenhaCreateProp" />
+
+    <CheckBox
+        android:id="@+id/chekSenhaCreatLogin"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="70dp"
+        android:text="Ver senha"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editSenhaCreatePropConfirm"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnCreatPropLogin"
+        style="@style/Button"
+        android:layout_width="286dp"
+        android:layout_height="60dp"
+        android:text="@string/cadastrarNovoProp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chekSenhaCreatLogin"/>
+
+    <TextView
+        android:id="@+id/btnNovoCadastroProp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/propVincularAuto"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCreatPropLogin"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,6 +30,8 @@
     <string name="user">Nome Usuário</string>
     <string name="Cadastrar">Show Cadastratros</string>
     <string name="vincular">Vincular Auto</string>
+    <string name="cadastrarNovoProp">Cadastrar novo Proprietário</string>
+    <string name="propVincularAuto">Vincular Auto p/ Prop</string>
 
 
 </resources>
