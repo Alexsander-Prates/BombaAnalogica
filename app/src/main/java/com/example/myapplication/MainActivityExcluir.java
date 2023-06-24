@@ -103,6 +103,7 @@ public class MainActivityExcluir extends AppCompatActivity {
 
     private void iniciarListener() {
         userArrayList.clear();
+
         meusAutos.whereEqualTo("adm",autenticacaoAuth.getCurrentUser().getUid())
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -170,12 +171,16 @@ public class MainActivityExcluir extends AppCompatActivity {
                 String clube = userArrayList.get(index).getClube();
                 String outros = userArrayList.get(index).getOutros();
                 String photo = userArrayList.get(index).getPhoto();
+                String photoKey = userArrayList.get(index).getPhotoKey();
+                String id = userArrayList.get(index).getId();
 
 
                 Intent intent = new Intent(getApplicationContext(), MainActivityCadastrar.class);
                 intent.putExtra("pNome", nome);
                 intent.putExtra("pDesc", desc);
                 intent.putExtra("pPhoto",photo);
+                intent.putExtra("pPhotoKey",photoKey);
+                intent.putExtra("pId",id);
 
 
                 if(TextUtils.isEmpty(userArrayList.get(index).getClube())){
@@ -212,7 +217,7 @@ public class MainActivityExcluir extends AppCompatActivity {
         confirmarExcluir.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                meusAutos.document(auto).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                meusAutos.document(idCarro).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
                                 excluirPhotoAndHistoric(index,idCarro);

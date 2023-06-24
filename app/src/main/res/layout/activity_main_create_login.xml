@@ -25,7 +25,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.058"
-            app:srcCompat="@drawable/icon_add" />
+            app:srcCompat="@drawable/ic_auto_photo" />
 
 
         <EditText
@@ -80,6 +80,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editSenhaCreateLogin" />
 
+        <EditText
+            android:id="@+id/editPix"
+            style="@style/Edit_TextLetras"
+            android:layout_width="309dp"
+            android:layout_height="67dp"
+            android:drawableRight="@drawable/ic_pix"
+            android:hint="Chave Pix"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editSenhaCreateLoginConfirm" />
+
         <CheckBox
             android:id="@+id/chekSenhaCreatLogin"
             android:layout_width="200dp"
@@ -89,7 +101,7 @@
             android:text="Ver senha"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editSenhaCreateLoginConfirm"
+            app:layout_constraintTop_toBottomOf="@+id/editPix"
             />
 
         <ProgressBar

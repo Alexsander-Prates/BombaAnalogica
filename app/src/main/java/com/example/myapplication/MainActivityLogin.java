@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.Manifest;
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -29,6 +30,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+import java.util.List;
 
 import Util.ConfigBD;
 import model.User;
@@ -55,6 +63,7 @@ public class MainActivityLogin extends AppCompatActivity {
         setContentView(binding.getRoot());
         inicilializarLigacoes();
         MostrarSenhaDigitada();
+        askPermission();
 
 
 
@@ -84,13 +93,29 @@ public class MainActivityLogin extends AppCompatActivity {
         createUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivityLogin.this, "Em manutenção", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(getApplicationContext(), MainActivityCreateLogin.class);
-                //startActivity(intent);
+                //Toast.makeText(MainActivityLogin.this, "Em manutenção", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), MainActivityCreateLogin.class);
+                startActivity(intent);
 
             }
         });
 
+
+    }
+
+    private void askPermission() {
+        Dexter.withContext(this).withPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE).withListener(new MultiplePermissionsListener() {
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
+
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
+                permissionToken.continuePermissionRequest();
+            }
+        }).check();
 
     }
 
@@ -159,6 +184,7 @@ public class MainActivityLogin extends AppCompatActivity {
             case R.id.itemLogar:
                 Intent intent2 = new Intent(getApplicationContext(), MainActivityValues.class);
                 startActivity(intent2);
+
                 break;
 
         }

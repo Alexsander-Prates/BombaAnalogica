@@ -1,29 +1,57 @@
 package Util;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.myapplication.MainActivityResults;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.Valores;
 
@@ -32,8 +60,14 @@ public class PDF extends Valores {
 
 
     private File arquivo;
-    private Context context;
+    Context context;
     private String nomeFile;
+    FirebaseAuth autenticacaoAuth = ConfigBD.FirebaseAutentic();
+    FirebaseFirestore autenticacaoUserBD = ConfigBD.FirebaseCadastroUser();
+    CollectionReference meusUsuarios= autenticacaoUserBD.collection("Usuarios");
+    Bitmap photoPDF;
+
+
 
     public PDF() {
     }
@@ -69,6 +103,10 @@ public class PDF extends Valores {
         String dataPDF = "Data do abastecimento";
         String valorTotalPDF = "Total à Pagar R$ ";
         String descPDF = "Descrição do Auto";
+        String chavePixPDF = "Chave Pix";
+        String nomeUserPDF = "Usuário";
+        String emailUserPDF = "E-mail";
+
 
         canvas.drawText(dataPDF,30,60,corTexto2);
         canvas.drawText(date.toString(), 30, 75, corTexto);
@@ -99,20 +137,57 @@ public class PDF extends Valores {
 
 
 
-        documentoPDF.finishPage(novaPagina);
+        String id = autenticacaoAuth.getCurrentUser().getUid();
+        meusUsuarios.document(id).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException error) {
 
-        asPermissions();
-        File pasta = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/myPDF");
-        if(!pasta.exists()){
-            pasta.mkdir();
-        }
-        nomeFile = date.toString();
-        salvarPDF(documentoPDF,nomeFile, pasta);
+                if(documentSnapshot != null){
 
-        documentoPDF.close();
+                    final String nome = documentSnapshot.getString("nome");
+                    final String photoUri = documentSnapshot.getString("photoUri");
+                    final String pix = documentSnapshot.getString("pix");
+                    final String email = autenticacaoAuth.getCurrentUser().getEmail();
+
+                    canvas.drawText(nomeUserPDF,30,310,corTexto2);
+                    canvas.drawText(nome, 90, 310, corTexto);
+
+                    canvas.drawText(emailUserPDF,30,330,corTexto2);
+                    canvas.drawText(email, 90, 330, corTexto);
+
+                    canvas.drawText(chavePixPDF,30,350,corTexto2);
+                    canvas.drawText(pix, 30, 380, corTexto);
+
+
+                    documentoPDF.finishPage(novaPagina);
+
+                    asPermissions();
+                    File pasta = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/myPDF");
+                    if(!pasta.exists()){
+                        pasta.mkdir();
+                    }
+                    nomeFile = date.toString();
+                    salvarPDF(documentoPDF,nomeFile, pasta);
+
+                    documentoPDF.close();
+
+
+
+
+                }
+
+
+
+
+            }
+        });
+
+
+
 
 
     }
+
 
     public void salvarPDF(PdfDocument documentoPDF ,String nomeDoArquivo , File pasta){
         arquivo = new File(pasta, nomeDoArquivo + ".pdf");

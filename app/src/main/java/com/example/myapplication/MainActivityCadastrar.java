@@ -4,19 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.content.FileProvider;
+
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.graphics.drawable.BitmapDrawable;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
+
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -29,7 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.anstrontechnologies.corehelper.AnstronCoreHelper;
+
 import com.example.myapplication.databinding.ActivityMainCadastrarBinding;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,31 +45,31 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.iceteck.silicompressorr.FileUtils;
-import com.iceteck.silicompressorr.SiliCompressor;
+
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.squareup.picasso.Picasso;
 
-import com.squareup.picasso.RequestCreator;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOError;
 import java.io.IOException;
 
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import Util.Adapter;
 import Util.ConfigBD;
 
-import id.zelory.compressor.Compressor;
 import model.Autos;
 
 
@@ -85,6 +85,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
 
     FirebaseAuth autenticacaoAuth = ConfigBD.FirebaseAutentic();
 
+    Adapter adapter;
 
     private Uri photoUri;
     private ImageView photoAuto;
@@ -92,7 +93,8 @@ public class MainActivityCadastrar extends AppCompatActivity {
     private RadioButton radioClube, radioOutros;
     private ProgressBar progressBar;
     private AppCompatButton btnCadastrarAuto, btnShowData;
-    String pNome, pDesc, pOutros, pClube, pId;
+    String pNome, pDesc, pOutros, pClube, pId,pPhoto,pPhotoKey;
+
 
 
     @Override
@@ -121,8 +123,13 @@ public class MainActivityCadastrar extends AppCompatActivity {
                     updateDadosCadastro();
 
                 } else {
+                    if(photoUri!=null){
+                        inserirPhoto();
+                    }else{
+                        String gambiarra = "sem foto";
+                        salvarAutos(gambiarra,gambiarra);
+                    }
 
-                    inserirPhoto();
                 }
 
                 if(TextUtils.isEmpty(descricao.getText().toString())||
@@ -206,57 +213,71 @@ public class MainActivityCadastrar extends AppCompatActivity {
 
     private void inserirPhoto() {
 
-        byte[] bytes = new byte[0];
-        try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),photoUri);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG,0,byteArrayOutputStream);
-            bytes = byteArrayOutputStream.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
+        try{
+
+            byte[] bytes = new byte[0];
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),photoUri);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG,0,byteArrayOutputStream);
+                bytes = byteArrayOutputStream.toByteArray();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            final ProgressDialog pd = new ProgressDialog(this);
+            pd.setTitle("Up Photo");
+            pd.show();
+
+
+            final String randomKey = UUID.randomUUID().toString();
+            String nome = autenticacaoAuth.getCurrentUser().getEmail() + "/";
+            String teste = "images ";
+            String nomePastaPhoto = teste + nome;
+            StorageReference riversRef = storageReference.child(nomePastaPhoto + randomKey);
+
+
+            riversRef.putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Log.i("Test_URL",uri.toString());
+                            String receberPhoto = uri.toString();
+                            String photoKey = randomKey;
+
+                            Bundle bundle = getIntent().getExtras();
+                            if(bundle!= null){
+
+                            }
+                            else {
+                                salvarAutos( receberPhoto, photoKey);
+                            }
+
+                        }
+                    });
+                    pd.dismiss();
+                    Snackbar.make(findViewById(android.R.id.content), "Imagem Uploaded",Snackbar.LENGTH_LONG).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    pd.dismiss();
+                    Toast.makeText(getApplicationContext(), "Falha no Upload", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    double progressPercent = (100.00 * snapshot.getBytesTransferred()/ snapshot.getTotalByteCount());
+                    pd.setMessage("Percentage: " + (int) progressPercent + "%");
+                }
+            });
+
+        }catch (NullPointerException n){
+            Toast.makeText(getApplicationContext(), "Sem foto", Toast.LENGTH_SHORT).show();
         }
 
-        final ProgressDialog pd = new ProgressDialog(this);
-        pd.setTitle("Up Photo");
-        pd.show();
-
-
-        final String randomKey = UUID.randomUUID().toString();
-        String nome = autenticacaoAuth.getCurrentUser().getEmail() + "/";
-        String teste = "images ";
-        String nomePastaPhoto = teste + nome;
-        StorageReference riversRef = storageReference.child(nomePastaPhoto + randomKey);
-
-
-        riversRef.putBytes(bytes).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Log.i("Test_URL",uri.toString());
-                        final String receberPhoto = uri.toString();
-                        String photoKey = randomKey;
-                        salvarAutos( receberPhoto, photoKey);
-
-                    }
-                });
-                pd.dismiss();
-                Snackbar.make(findViewById(android.R.id.content), "Imagem Uploaded",Snackbar.LENGTH_LONG).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                pd.dismiss();
-                Toast.makeText(getApplicationContext(), "Falha no Upload", Toast.LENGTH_SHORT).show();
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                double progressPercent = (100.00 * snapshot.getBytesTransferred()/ snapshot.getTotalByteCount());
-                pd.setMessage("Percentage: " + (int) progressPercent + "%");
-            }
-        });
     }
 
     private void salvarAutos(String receberPhoto, String photokEY){
@@ -298,7 +319,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
             autoMoveis.put("clube",autos.getClube());
         }
 
-        DocumentReference documentReference = autenticacaoUserBD.collection("Autos - " + autenticacaoAuth.getCurrentUser().getEmail()).document(autos.getAuto());
+        DocumentReference documentReference = autenticacaoUserBD.collection("Autos - " + autenticacaoAuth.getCurrentUser().getEmail()).document(autos.getId());
         documentReference.set(autoMoveis).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -317,12 +338,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
 
     private void inicializarLigacoes(){
 
-
         nome = binding.editNome;
-        Bundle bundle = getIntent().getExtras();
-        if(bundle!= null){
-            nome.setEnabled(false);
-        }
         btnCadastrarAuto = binding.btnGravarCadastrar;
         radioClube = binding.radioButtonClube;
         radioOutros = binding.radioButtonOutros;
@@ -330,6 +346,21 @@ public class MainActivityCadastrar extends AppCompatActivity {
         descricao = binding.editDescricao;
         btnShowData = binding.btnMostrarList;
         photoAuto = binding.fotoMeioLocomocao;
+
+        Bundle bundle = getIntent().getExtras();
+        if(bundle!= null){
+            pPhoto = bundle.getString("pPhoto");
+            pPhotoKey = bundle.getString("pPhotoKey");
+
+            try{
+                Picasso.get().load(pPhoto).into(photoAuto);
+            } catch (IOError e){
+
+            }
+
+            //nome.setEnabled(false);
+        }
+
 
     }
 
@@ -360,7 +391,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
             pNome = bundle.getString("pNome");
             String pNomeAlt = pNome;
             pDesc= bundle.getString("pDesc");
-            pId = bundle.getString("id");
+
 
             if(TextUtils.isEmpty(bundle.getString("pClube"))){
                 pOutros = bundle.getString("pOutros");
@@ -376,27 +407,84 @@ public class MainActivityCadastrar extends AppCompatActivity {
     }
 
     private void updateDadosCadastro(){
+        final ProgressDialog pd = new ProgressDialog(this);
+        pd.setTitle("Up Photo");
+        pd.show();
 
-
+        Bundle bundle = getIntent().getExtras();
+        pId = bundle.getString("pId");
         String upNome = nome.getText().toString();
         String upDesc = descricao.getText().toString();
         String upClube = "Clube";
         String upOutros = "Outros";
 
-        CollectionReference meusAutos = autenticacaoUserBD.collection("Autos - " + autenticacaoAuth.getCurrentUser().getEmail());
 
-        meusAutos.document(pNome).update("auto",upNome,
-                "desc",upDesc).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
 
+        if(bundle.getString("pPhotoKey")!=null){
+
+            BitmapDrawable drawable = (BitmapDrawable) photoAuto.getDrawable();
+            Bitmap bitmap = drawable.getBitmap();
+
+            File file = new File(getCacheDir(), "temp_image.jpg");
+
+            try {
+                FileOutputStream outputStream = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 0, outputStream);
+                outputStream.flush();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
 
-            }
-        });
+            Uri fileUri = Uri.fromFile(file);
+
+            String nome = autenticacaoAuth.getCurrentUser().getEmail() + "/";
+            String teste = "images ";
+            String nomePastaPhoto = teste + nome;
+            StorageReference riversRef = storageReference.child(nomePastaPhoto + pPhotoKey);
+            UploadTask uploadTask = riversRef.putFile(fileUri);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    riversRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String receberNovaPhoto = uri.toString();
+                            CollectionReference meusAutos = autenticacaoUserBD.collection("Autos - " + autenticacaoAuth.getCurrentUser().getEmail());
+
+                            meusAutos.document(pId).update("auto",upNome,
+                                    "desc",upDesc,"photo",receberNovaPhoto).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+
+                        }
+
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+                    pd.dismiss();
+                    Snackbar.make(findViewById(android.R.id.content), "Imagem Uploaded",Snackbar.LENGTH_LONG).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+                    double progressPercent = (100.00 * snapshot.getBytesTransferred()/ snapshot.getTotalByteCount());
+                    pd.setMessage("Percentage: " + (int) progressPercent + "%");
+                }
+            });
+
+        }
 
     }
 }

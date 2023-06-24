@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.Manifest;
 import android.content.DialogInterface;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -287,6 +289,8 @@ public class MainActivityResults extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 PDF pdf = new PDF();
                 pdf.gerarPDF(descAuto, valorTotalPagarS,dataAtual, nome,valorLitroS, valorOleoS, taxaS, litros, quantO, mensagem);
+                PDF pdfEnviar = pdf;
+                enviarValoresWhats(dataAtual);
             }
         });
 
@@ -295,38 +299,25 @@ public class MainActivityResults extends AppCompatActivity {
 
 
 
-    /*private void enviarValoresWhats() {
-        AlertDialog.Builder inserirPhone = new AlertDialog.Builder(this);
-        inserirPhone.setTitle("Atenção");
-        inserirPhone.setMessage("Vocẽ deseja enviar o PDF pelo Whatsapp? Favor, insirá uma número");
-        inserirPhone.setCancelable(false);
-        inserirPhone.setNegativeButton("Cancelar", null);
-        EditText phone = new EditText(this);
-        LinearLayout.LayoutParams linearLayout = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        phone.setLayoutParams(linearLayout);
-        inserirPhone.setView(phone);
+    private void enviarValoresWhats(Date dataAtual) {
 
-
-        inserirPhone.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                pdfUri=getIntent().getData();
-                String url = "https://api.whatsapp.w4b.com/send?phone ="; //+dialog com camp pegar numero
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.putExtra(Intent.EXTRA_STREAM,pdfUri);
-                intent.setType("application/pdf");
-                intent.setData(Uri.parse(url));
-                startActivity(intent);
+        String caminhoDoPDF ="/sdcard/myPDF/"+ dataAtual.toString()+".pdf";
 
 
 
-            }
-        });
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("application/pdf");
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + caminhoDoPDF));
+        intent.setPackage("com.whatsapp");
 
-        inserirPhone.create().show();
-    }*/
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "O WhatsApp não está instalado.", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
 
 
 }
