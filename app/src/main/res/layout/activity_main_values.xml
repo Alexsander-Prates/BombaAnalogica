@@ -25,7 +25,7 @@
         app:layout_constraintHorizontal_bias="0.194"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.042"
+        app:layout_constraintVertical_bias="0.137"
         app:srcCompat="@drawable/ic_baseline_info" />
 
     <TextView
@@ -39,21 +39,20 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/informativoTaxa"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.055" />
+        app:layout_constraintVertical_bias="0.149" />
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="138dp"
         android:layout_height="124dp"
+        android:contentDescription="@string/outros"
         app:layout_constraintBottom_toTopOf="@+id/btnProximoGravar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.058"
-        app:srcCompat="@drawable/ic_bomba_analogica"
-        android:contentDescription="@string/outros" />
-    
+        app:layout_constraintVertical_bias="0.202"
+        app:srcCompat="@drawable/ic_bomba_analogica" />
 
     <EditText
         android:id="@+id/editNumberValorLitro"
@@ -115,6 +114,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progresseBBar"/>
+
+    <com.google.android.gms.ads.AdView
+        xmlns:ads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        ads:layout_constraintEnd_toEndOf="parent"
+        ads:layout_constraintHorizontal_bias="0.494"
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
+
+    </com.google.android.gms.ads.AdView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

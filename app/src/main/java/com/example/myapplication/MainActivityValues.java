@@ -24,6 +24,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.myapplication.databinding.ActivityMainValuesBinding;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -53,6 +58,16 @@ public class MainActivityValues extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainValuesBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         iniciliazarLigacoes();
 

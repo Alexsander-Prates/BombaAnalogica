@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView
+<androidx.core.widget.NestedScrollView xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/activity_main_login"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,13 +19,12 @@
             android:id="@+id/imageView4"
             android:layout_width="138dp"
             android:layout_height="124dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.058"
-            app:srcCompat="@drawable/ic_login_new" />
-
+            android:layout_marginTop="92dp"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintHorizontal_bias="0.498"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toTopOf="parent"
+            ads:srcCompat="@drawable/ic_login_new" />
 
         <EditText
             android:id="@+id/editEmail"
@@ -37,9 +35,9 @@
             android:ems="10"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView4"/>
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintTop_toBottomOf="@+id/imageView4"/>
 
         <EditText
             android:id="@+id/editSenha"
@@ -50,9 +48,9 @@
             android:ems="10"
             android:hint="@string/senha"
             android:inputType="text|textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editEmail" />
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toBottomOf="@+id/editEmail" />
 
         <CheckBox
             android:id="@+id/chekSenhaLogin"
@@ -61,9 +59,9 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="70dp"
             android:text="Ver senha"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editSenha"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintTop_toBottomOf="@+id/editSenha"
             />
 
         <ProgressBar
@@ -72,9 +70,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:visibility="invisible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chekSenhaLogin"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintTop_toBottomOf="@+id/chekSenhaLogin"
             />
 
 
@@ -84,9 +82,9 @@
             android:layout_width="286dp"
             android:layout_height="60dp"
             android:text="@string/login"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressebar" />
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toBottomOf="@+id/progressebar" />
 
         <TextView
             android:id="@+id/btnNovoCadastro"
@@ -98,9 +96,22 @@
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="18dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnLogar"/>
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintTop_toBottomOf="@+id/btnLogar"/>
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+            ads:layout_constraintBottom_toTopOf="@+id/imageView4"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintHorizontal_bias="0.494"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints"></com.google.android.gms.ads.AdView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

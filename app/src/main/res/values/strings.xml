@@ -32,6 +32,8 @@
     <string name="vincular">Vincular Auto</string>
     <string name="cadastrarNovoProp">Cadastrar novo Proprietário</string>
     <string name="propVincularAuto">Vincular Auto p/ Prop</string>
+    <string name="splash_activity_image_text" translatable="false">Splash Activity Image</string>
+    <string name="splash_activity_text" translatable="false">Bomba Analógica - Bem-vindo</string>
 
 
 </resources>
