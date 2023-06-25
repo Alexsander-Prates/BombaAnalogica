@@ -37,6 +37,28 @@
             app:layout_constraintTop_toBottomOf="@+id/testeId"
             tools:layout_editor_absoluteX="0dp" />
 
+        <TextView
+            android:id="@+id/valorHistoric"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="@string/prefixo_r_valor"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nomeHistoric" />
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="Valor Total R$"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.075"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nomeHistoric" />
 
         <com.tsuryo.swipeablerv.SwipeableRecyclerView
             android:id="@+id/recyclerListHistoric"
@@ -47,7 +69,7 @@
             app:rightText="Excluir"
             android:foregroundGravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nomeHistoric"
+            app:layout_constraintTop_toBottomOf="@+id/valorHistoric"
             app:layout_constraintVertical_bias="0.146"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="0dp">

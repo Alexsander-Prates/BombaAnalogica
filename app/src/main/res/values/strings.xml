@@ -34,6 +34,7 @@
     <string name="propVincularAuto">Vincular Auto p/ Prop</string>
     <string name="splash_activity_image_text" translatable="false">Splash Activity Image</string>
     <string name="splash_activity_text" translatable="false">Bomba Analógica - Bem-vindo</string>
+    <string name="prefixo_r_valor">R$ %s</string>
 
 
 </resources>

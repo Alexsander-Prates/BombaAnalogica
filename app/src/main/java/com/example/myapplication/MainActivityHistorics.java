@@ -12,13 +12,15 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.myapplication.databinding.ActivityMainHistoricsBinding;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.tsuryo.swipeablerv.SwipeLeftRightCallback;
 import com.tsuryo.swipeablerv.SwipeableRecyclerView;
@@ -39,7 +41,8 @@ public class MainActivityHistorics extends AppCompatActivity {
     ArrayList<Valores> valoresArrayList;
     ArrayList<Autos> userArrayList;
     AdapterH adapterH;
-    private TextView nameAuto;
+    private TextView nameAuto,valorAuto;
+
 
     private ActivityMainHistoricsBinding binding;
 
@@ -59,6 +62,7 @@ public class MainActivityHistorics extends AppCompatActivity {
 
         iniciarListener();
         swipData();
+        calcularValorTotal();
 
 
     }
@@ -66,6 +70,7 @@ public class MainActivityHistorics extends AppCompatActivity {
     private void iniciarLigacoes(){
         listaDeValores = binding.recyclerListHistoric;
         nameAuto = binding.nomeHistoric;
+        valorAuto = binding.valorHistoric;
 
 
     }
@@ -106,6 +111,34 @@ public class MainActivityHistorics extends AppCompatActivity {
                         }
                     }
                 });
+
+
+    }
+
+    private void calcularValorTotal(){
+        String id = getIntent().getStringExtra("id");
+        final double[] total = {0};
+        historicsAutos.whereEqualTo("idCarro",id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot document : task.getResult()){
+                        if(document.contains("valorTotal")){
+                            String valorTotalString = document.getString("valorTotal");
+                            String valorNumericoString = valorTotalString.substring(3); // Remove "R$ " do início da string
+                            valorNumericoString = valorNumericoString.replace(",", "."); // Substitui a vírgula por ponto
+                            double valorTotal = Double.parseDouble(valorNumericoString);
+                            total[0] += valorTotal;
+                        }
+                    }
+
+                    valorAuto.setText(String.valueOf(total[0]));
+
+                }
+
+            }
+        });
+
 
 
     }
