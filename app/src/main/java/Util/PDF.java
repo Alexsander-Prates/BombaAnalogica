@@ -1,29 +1,16 @@
 package Util;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.graphics.pdf.PdfDocument;
-import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Base64;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.example.myapplication.MainActivityResults;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,23 +22,15 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
 import model.Valores;
 
@@ -107,9 +86,12 @@ public class PDF extends Valores {
         String nomeUserPDF = "Usuário";
         String emailUserPDF = "E-mail";
 
+        SimpleDateFormat formatoData = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy 'às' HH: mm: ss", new Locale("pt", "BR"));
+        String dateFim = formatoData.format(date);
+        String dateF = dateFim;
 
         canvas.drawText(dataPDF,30,60,corTexto2);
-        canvas.drawText(date.toString(), 30, 75, corTexto);
+        canvas.drawText(dateF.toString(), 30, 75, corTexto);
 
         canvas.drawText(autoDPF,30,100,corTexto2);
         canvas.drawText(auto, 180, 100, corTexto);
@@ -166,7 +148,7 @@ public class PDF extends Valores {
                     if(!pasta.exists()){
                         pasta.mkdir();
                     }
-                    nomeFile = date.toString();
+                    nomeFile = dateF.toString();
                     salvarPDF(documentoPDF,nomeFile, pasta);
 
                     documentoPDF.close();

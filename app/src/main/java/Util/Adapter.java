@@ -12,18 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-
-
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.example.myapplication.MainActivityCalculations;
-import com.example.myapplication.MainActivityExcluir;
-import com.example.myapplication.MainActivityHistorics;
-import com.example.myapplication.R;
-
+import com.alexsanderprates.myapplication.MainActivityHistorics;
+import com.alexsanderprates.myapplication.R;
 import com.squareup.picasso.Picasso;
-
 
 import java.io.IOError;
 import java.util.ArrayList;
