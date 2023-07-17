@@ -104,6 +104,7 @@ public class MainActivityCreateLogin extends AppCompatActivity {
 
                 if(TextUtils.isEmpty(pix.getText().toString())){
                     pix.setText("Não Cadastrado");
+
                 }
                 if ((TextUtils.isEmpty(userNovo.getText().toString()))
                         || ((TextUtils.isEmpty(emailNovo.getText().toString())))
@@ -119,6 +120,7 @@ public class MainActivityCreateLogin extends AppCompatActivity {
 
                 } else {
                     cadastrandoUsers();
+
 
                 }
             }
@@ -160,6 +162,41 @@ public class MainActivityCreateLogin extends AppCompatActivity {
 
     }
 
+    private void selectPhoto() {
+        try{
+
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent, 0 );
+
+        }catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try{
+            if(requestCode==0){
+                photoUri = data.getData();
+
+                Bitmap bitmap = null;
+
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photoUri);
+                photoCadastro.setImageDrawable(new BitmapDrawable(bitmap));
+            }
+
+
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void cadastrandoUsers() {
         User user = new User();
         user.setEmail(emailNovo.getText().toString());
@@ -173,7 +210,11 @@ public class MainActivityCreateLogin extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
                     Toast.makeText(MainActivityCreateLogin.this, mensagens[1], Toast.LENGTH_SHORT).show();
-                    salvingUsuarios();
+                    if(photoUri!=null)
+                        salvingUsuarios();
+                    else{
+                        inserirUserSemPhoto();
+                    }
                 } else {
                     String[] erroExecao = {};
                     try {
@@ -326,42 +367,38 @@ public class MainActivityCreateLogin extends AppCompatActivity {
         });
     }
 
-    private void selectPhoto() {
-        try{
 
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent, 0 );
+    private void inserirUserSemPhoto() {
+        User user = new User();
 
-        }catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try{
-            if(requestCode==0){
-                photoUri = data.getData();
-
-                Bitmap bitmap = null;
-
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photoUri);
-                photoCadastro.setImageDrawable(new BitmapDrawable(bitmap));
-            }
+        user.setNome(userNovo.getText().toString());
+        user.setPix(pix.getText().toString());
 
 
-        }catch (NullPointerException e){
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    private void inserirPhoto() {
+        autenticacaoUserBD=ConfigBD.FirebaseCadastroUser();
 
+        user.setUserID(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        Map<String,Object> useres = new HashMap<>();
+        useres.put("nome", user.getNome());
+        useres.put("id", user.getUserID());
+        useres.put("pix", user.getPix());
+
+
+        DocumentReference documentReference = autenticacaoUserBD.collection("Usuarios").document(user.getUserID());
+        documentReference.set(useres).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("db",mensagens[2]);
+                    }
+                })
+
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("db_error",mensagens[3]+e.toString());
+                    }
+                });
 
     }
 }

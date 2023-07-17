@@ -1,13 +1,18 @@
 package Util;
 
 import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
 
@@ -44,15 +49,14 @@ public class PDF extends Valores {
     FirebaseAuth autenticacaoAuth = ConfigBD.FirebaseAutentic();
     FirebaseFirestore autenticacaoUserBD = ConfigBD.FirebaseCadastroUser();
     CollectionReference meusUsuarios= autenticacaoUserBD.collection("Usuarios");
-    Bitmap photoPDF;
+    private ContentResolver contentResolver;
 
 
 
-    public PDF() {
-    }
 
     public PDF(Context context){
         this.context = context;
+        this.contentResolver = context.getContentResolver();
     }
 
     public PDF(String date, String valorTotal, String valorGasolina, String valorOleo, String valorTaxa, String quantidadeL, String quantidadeO, String mensagem) {
@@ -143,63 +147,79 @@ public class PDF extends Valores {
 
                     documentoPDF.finishPage(novaPagina);
 
-                    asPermissions();
-                    File pasta = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/myPDF");
-                    if(!pasta.exists()){
-                        pasta.mkdir();
+                    requestStoragePermissions();
+                    File downloadsDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                    if(!downloadsDirectory.exists()){
+                        downloadsDirectory.mkdir();
                     }
-                    nomeFile = dateF.toString();
-                    salvarPDF(documentoPDF,nomeFile, pasta);
+                    nomeFile = dateF;
+                    salvarPDF(documentoPDF,nomeFile, downloadsDirectory);
 
                     documentoPDF.close();
 
-
-
-
                 }
-
-
-
-
             }
         });
 
-
-
-
-
     }
 
 
-    public void salvarPDF(PdfDocument documentoPDF ,String nomeDoArquivo , File pasta){
-        arquivo = new File(pasta, nomeDoArquivo + ".pdf");
+    public void salvarPDF(PdfDocument documentoPDF, String nomeDoArquivo, File pasta) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Downloads.DISPLAY_NAME, nomeDoArquivo + ".pdf");
+            values.put(MediaStore.Downloads.MIME_TYPE, "application/pdf");
+            values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
 
-        try {
-            arquivo.createNewFile();
-            OutputStream stream = new FileOutputStream(arquivo);
-            documentoPDF.writeTo(stream);
-            stream.close();
+            Uri uri = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                OutputStream outputStream = contentResolver.openOutputStream(uri);
+                documentoPDF.writeTo(outputStream);
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            arquivo = new File(pasta, nomeDoArquivo + ".pdf");
+
+            try {
+                arquivo.createNewFile();
+                OutputStream stream = new FileOutputStream(arquivo);
+                documentoPDF.writeTo(stream);
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-
     }
 
-    private void asPermissions(){
-        Dexter.withContext(this.context).withPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE).withListener(new MultiplePermissionsListener() {
-            @Override
-            public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
 
-            }
 
-            @Override
-            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-                permissionToken.continuePermissionRequest();
-            }
-        }).check();
 
+
+
+    private void requestStoragePermissions() {
+        Dexter.withContext(this.context)
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+                            // As permissões foram concedidas, você pode acessar o armazenamento externo aqui
+                        } else {
+                            // Alguma(s) permissão(ões) foi/foram negada(s)
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
     }
+
 }

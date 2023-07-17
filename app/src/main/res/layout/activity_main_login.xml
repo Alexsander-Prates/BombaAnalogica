@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.core.widget.NestedScrollView xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -68,13 +70,23 @@
             android:id="@+id/progressebar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:visibility="invisible"
             ads:layout_constraintStart_toStartOf="parent"
             ads:layout_constraintEnd_toEndOf="parent"
             ads:layout_constraintTop_toBottomOf="@+id/chekSenhaLogin"
             />
 
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnCalcular"
+            style="@style/Button"
+            android:layout_width="286dp"
+            android:layout_height="60dp"
+            android:text="@string/iniciar"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toBottomOf="@+id/progressebar" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnLogar"
@@ -84,18 +96,18 @@
             android:text="@string/login"
             ads:layout_constraintEnd_toEndOf="parent"
             ads:layout_constraintStart_toStartOf="parent"
-            ads:layout_constraintTop_toBottomOf="@+id/progressebar" />
+            ads:layout_constraintTop_toBottomOf="@+id/btnCalcular" />
 
         <TextView
             android:id="@+id/btnNovoCadastro"
+            style="@style/clogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="25dp"
             android:layout_marginBottom="20dp"
             android:text="@string/cadastrarNovo"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:textSize="18dp"
             ads:layout_constraintStart_toStartOf="parent"
             ads:layout_constraintEnd_toEndOf="parent"
             ads:layout_constraintTop_toBottomOf="@+id/btnLogar"/>

@@ -23,8 +23,11 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.DecimalFormat;
+
+import Util.ConfigBD;
 
 
 public class MainActivityCalculations extends AppCompatActivity {
@@ -38,6 +41,7 @@ public class MainActivityCalculations extends AppCompatActivity {
             leituraInicial, leituraFinal, quantOleo, taxaAdm;
     float valorGambiarra = 0;
     DecimalFormat df = new DecimalFormat("0.00");
+    FirebaseAuth autenticacaoAuth = ConfigBD.FirebaseAutentic();
 
 
     @Override
@@ -248,20 +252,26 @@ public class MainActivityCalculations extends AppCompatActivity {
         confirmarIncluir.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(totalPagar!=0){
-                    Intent intent2 = new Intent(getApplicationContext(),MainActivityResults.class);
-                    intent2.putExtra("valorLitro",valorLitro.toString());
-                    intent2.putExtra("valorOleo",valorOleo.toString());
-                    intent2.putExtra("valorTotal",totalPagar.toString());
-                    intent2.putExtra("mensagem",tResultados);
-                    intent2.putExtra("litros",litros.toString());
-                    intent2.putExtra("quantO",quantOleo.toString());
-                    intent2.putExtra("taxaAdm",taxaAdm.toString());
-                    startActivity(intent2);
+                if(autenticacaoAuth.getCurrentUser()!=null){
+                    if(totalPagar!=0){
+                        Intent intent2 = new Intent(getApplicationContext(),MainActivityResults.class);
+                        intent2.putExtra("valorLitro",valorLitro.toString());
+                        intent2.putExtra("valorOleo",valorOleo.toString());
+                        intent2.putExtra("valorTotal",totalPagar.toString());
+                        intent2.putExtra("mensagem",tResultados);
+                        intent2.putExtra("litros",litros.toString());
+                        intent2.putExtra("quantO",quantOleo.toString());
+                        intent2.putExtra("taxaAdm",taxaAdm.toString());
+                        startActivity(intent2);
+                        finish();
 
-                } else{
-                    Toast.makeText(MainActivityCalculations.this, "Calcule as quantidades", Toast.LENGTH_LONG).show();
+                    } else{
+                        Toast.makeText(MainActivityCalculations.this, "Calcule as quantidades", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivityCalculations.this, "Realize Login para vincular valores", Toast.LENGTH_LONG).show();
                 }
+
 
             }
         });

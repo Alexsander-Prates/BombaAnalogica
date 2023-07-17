@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -34,6 +35,7 @@ import com.tsuryo.swipeablerv.SwipeLeftRightCallback;
 import com.tsuryo.swipeablerv.SwipeableRecyclerView;
 
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -143,6 +145,7 @@ public class MainActivityResults extends AppCompatActivity {
                 salvarValoresAuto(position);
                 adapter.notifyDataSetChanged();
 
+
                 //abilitar botao enviar e pintar de verde
 
 
@@ -210,7 +213,12 @@ public class MainActivityResults extends AppCompatActivity {
         confirmarSalvar.setMessage("Você desejar salvar os valores -> " + mensagem + " no auto selecionado?" +
                 "Clique em Ok para continuar ou Não para cancelar");
         confirmarSalvar.setCancelable(false);
-        confirmarSalvar.setNegativeButton("Cancelar", null);
+        confirmarSalvar.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
         confirmarSalvar.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -269,21 +277,26 @@ public class MainActivityResults extends AppCompatActivity {
 
     }
 
-    public void criarPDF(String descAuto,String valorTotalPagarS,Date dataAtual,String nome,String valorLitroS,String valorOleoS,String taxaS,String litros,String quantO,String mensagem){
+    public void criarPDF(String descAuto,String valorTotalPagarS,Date date,String nome,String valorLitroS,String valorOleoS,String taxaS,String litros,String quantO,String mensagem){
 
         AlertDialog.Builder confirmarPDF = new AlertDialog.Builder(this);
         confirmarPDF.setTitle("Atenção");
-        confirmarPDF.setMessage("Você deseja criar um PDF com os resultados?" +
-                "Clique em Ok para continuar e enviar por whatsapp ou cancelar");
+        confirmarPDF.setMessage("Você deseja criar um PDF com os resultados e salvar na pasta Downloads?" +
+                "Clique em Ok para continuar");
         confirmarPDF.setCancelable(false);
-        confirmarPDF.setNegativeButton("Cancelar", null);
+        confirmarPDF.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
         confirmarPDF.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                PDF pdf = new PDF();
-                pdf.gerarPDF(descAuto, valorTotalPagarS,dataAtual, nome,valorLitroS, valorOleoS, taxaS, litros, quantO, mensagem);
+                PDF pdf = new PDF(getApplicationContext());
+                pdf.gerarPDF(descAuto, valorTotalPagarS,date, nome,valorLitroS, valorOleoS, taxaS, litros, quantO, mensagem);
                 PDF pdfEnviar = pdf;
-                enviarValoresWhats(dataAtual);
+                enviarValoresWhats(date);
             }
         });
 
@@ -292,25 +305,46 @@ public class MainActivityResults extends AppCompatActivity {
 
 
 
-    private void enviarValoresWhats(Date dataAtual) {
+    private void enviarValoresWhats(Date date) {
 
-        String caminhoDoPDF ="/sdcard/myPDF/"+ dataAtual.toString()+".pdf";
+        AlertDialog.Builder confirmarWhats = new AlertDialog.Builder(this);
+        confirmarWhats.setTitle("Atenção");
+        confirmarWhats.setMessage("Você deseja enviar o PDF por WhatsApp?" +
+                "Clique em Ok para continuar e enviar por WhatsApp ou cancelar");
+        confirmarWhats.setCancelable(false);
+        confirmarWhats.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        confirmarWhats.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SimpleDateFormat formatoData = new SimpleDateFormat("dd 'de' MMMM 'de' yyyy 'às' HH: mm: ss", new Locale("pt", "BR"));
+                String dateFim = formatoData.format(date);
+                String dateF = dateFim;
+                File downloadsDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                String caminhoDoPDF =downloadsDirectory +"/"+ dateF+".pdf";
 
 
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("application/pdf");
-        intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + caminhoDoPDF));
-        intent.setPackage("com.whatsapp");
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("application/pdf");
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + caminhoDoPDF));
+                intent.setPackage("com.whatsapp");
 
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, "O WhatsApp não está instalado.", Toast.LENGTH_SHORT).show();
-        }
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "O WhatsApp não está instalado.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
+        confirmarWhats.create().show();
 
     }
-
 
 }

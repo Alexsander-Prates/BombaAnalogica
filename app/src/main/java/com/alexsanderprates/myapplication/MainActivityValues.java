@@ -242,6 +242,19 @@ public class MainActivityValues extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+
+
+            Intent intent = new Intent(this, MainActivityLogin.class);
+            intent.putExtra("voltar","voltar");
+            startActivity(intent);
+            finish();
+
+            return true;
+        }
+
         if(autenticacaoLogin.getCurrentUser() ==null){
             Toast.makeText(MainActivityValues.this, mensagensErros[0], Toast.LENGTH_SHORT).show();
         } else{
@@ -264,6 +277,7 @@ public class MainActivityValues extends AppCompatActivity {
 
 
     }
+
 
 
 }

@@ -35,6 +35,11 @@
     <string name="splash_activity_image_text" translatable="false">Splash Activity Image</string>
     <string name="splash_activity_text" translatable="false">Bomba Analógica - Bem-vindo</string>
     <string name="prefixo_r_valor">R$ %s</string>
-
+    <string name="iniciar">Iniciar</string>
+    <string name="combustivel">R$ Combustível</string>
+    <string name="voltar">Voltar</string>
+    <string name="close_button_description" />
+    <string name="do_not_show_again">Não mostrar novamente.</string>
+    <string name="arrow_description">Tutorial da Aplicação</string>
 
 </resources>

@@ -188,27 +188,34 @@ public class MainActivityCadastrar extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-
-            if(requestCode==0 ){
+            if (requestCode == 0) {
                 photoUri = data.getData();
 
                 Bitmap bitmap = null;
                 try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),photoUri);
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoUri);
+
+                    // Verifica se o tamanho da foto é menor que 5MB
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    int fileSize = outputStream.toByteArray().length;
+
+                    if (fileSize > 5 * 1024 * 1024) {
+                        // Foto excede o tamanho máximo permitido (5MB)
+                        Toast.makeText(this, "A foto selecionada excede o tamanho máximo permitido.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     photoAuto.setImageDrawable(new BitmapDrawable(bitmap));
-
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
-
-        }catch (NullPointerException e){
-
+        } catch (NullPointerException e) {
+            // Tratamento da exceção
         }
-
     }
+
 
     private void inserirPhoto() {
 
