@@ -40,7 +40,7 @@
         <TextView
             android:id="@+id/valorHistoric"
             android:layout_width="200dp"
-            android:layout_height="50dp"
+            android:layout_height="48dp"
             android:gravity="center"
             android:text="@string/prefixo_r_valor"
             android:textColor="@color/black"
@@ -49,14 +49,15 @@
             app:layout_constraintTop_toBottomOf="@+id/nomeHistoric" />
 
         <TextView
-            android:layout_width="200dp"
-            android:layout_height="50dp"
+            android:layout_width="168dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="Valor Total R$"
             android:textColor="@color/black"
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.075"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nomeHistoric" />
 

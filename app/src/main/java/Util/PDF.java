@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,10 +13,14 @@ import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 
 import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.alexsanderprates.myapplication.MainActivityCalculations;
+import com.alexsanderprates.myapplication.MainActivityResults;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -29,6 +34,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -131,7 +137,6 @@ public class PDF extends Valores {
                 if(documentSnapshot != null){
 
                     final String nome = documentSnapshot.getString("nome");
-                    final String photoUri = documentSnapshot.getString("photoUri");
                     final String pix = documentSnapshot.getString("pix");
                     final String email = autenticacaoAuth.getCurrentUser().getEmail();
 
@@ -151,6 +156,7 @@ public class PDF extends Valores {
                     File downloadsDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                     if(!downloadsDirectory.exists()){
                         downloadsDirectory.mkdir();
+
                     }
                     nomeFile = dateF;
                     salvarPDF(documentoPDF,nomeFile, downloadsDirectory);
@@ -164,19 +170,24 @@ public class PDF extends Valores {
     }
 
 
-    public void salvarPDF(PdfDocument documentoPDF, String nomeDoArquivo, File pasta) {
+    public void salvarPDF(PdfDocument documentoPDF, String nomeDoArquivo, File pasta)  {
+        //para salvar aquivos aqui maior igual a 11 sdk30
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             ContentValues values = new ContentValues();
-            values.put(MediaStore.Downloads.DISPLAY_NAME, nomeDoArquivo + ".pdf");
-            values.put(MediaStore.Downloads.MIME_TYPE, "application/pdf");
-            values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, nomeDoArquivo + ".pdf");
+            values.put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf");
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
 
-            Uri uri = contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
+            Uri uri = contentResolver.insert(MediaStore.Downloads.getContentUri("external"), values);
 
             try {
-                OutputStream outputStream = contentResolver.openOutputStream(uri);
+                ParcelFileDescriptor descriptor = contentResolver.openFileDescriptor(uri,"rw");
+                FileDescriptor fileDescriptor = descriptor.getFileDescriptor();
+                OutputStream outputStream = new FileOutputStream(fileDescriptor);
+
                 documentoPDF.writeTo(outputStream);
                 outputStream.close();
+                descriptor.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

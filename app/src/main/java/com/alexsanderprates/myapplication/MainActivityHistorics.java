@@ -25,6 +25,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.tsuryo.swipeablerv.SwipeLeftRightCallback;
 import com.tsuryo.swipeablerv.SwipeableRecyclerView;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import Util.AdapterH;
@@ -115,33 +117,37 @@ public class MainActivityHistorics extends AppCompatActivity {
 
     }
 
-    private void calcularValorTotal(){
+    private void calcularValorTotal() {
         String id = getIntent().getStringExtra("id");
         final double[] total = {0};
-        historicsAutos.whereEqualTo("idCarro",id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+
+        historicsAutos.whereEqualTo("idCarro", id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(QueryDocumentSnapshot document : task.getResult()){
-                        if(document.contains("valorTotal")){
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (document.contains("valorTotal")) {
                             String valorTotalString = document.getString("valorTotal");
                             String valorNumericoString = valorTotalString.substring(3); // Remove "R$ " do início da string
                             valorNumericoString = valorNumericoString.replace(",", "."); // Substitui a vírgula por ponto
-                            double valorTotal = Double.parseDouble(valorNumericoString);
-                            total[0] += valorTotal;
+                            try {
+                                double valorTotal = Double.parseDouble(valorNumericoString);
+                                total[0] += valorTotal;
+                            } catch (NumberFormatException n) {
+                                // Lidar com a exceção, se necessário
+                            }
                         }
                     }
-
-                    valorAuto.setText(String.valueOf(total[0]));
-
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    String totalFormatado = df.format(total[0]); // Formata o valor total como uma string com 2 casas decimais
+                    valorAuto.setText(totalFormatado);
+                } else {
+                    // Lidar com falha na obtenção dos documentos, se necessário
                 }
-
             }
         });
-
-
-
     }
+
 
     private void swipData(){
 

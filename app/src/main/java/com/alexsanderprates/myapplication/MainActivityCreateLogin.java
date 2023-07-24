@@ -95,7 +95,7 @@ public class MainActivityCreateLogin extends AppCompatActivity {
 
         inicializarLicacoes();
         MostrarSenhasDigitadas();
-        askPermission();
+        //askPermission();
 
 
         btnCadastrarNovo.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +146,7 @@ public class MainActivityCreateLogin extends AppCompatActivity {
 
 
 
-    private void askPermission() {
+    /*private void askPermission() {
         Dexter.withContext(this).withPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE).withListener(new MultiplePermissionsListener() {
             @Override
@@ -160,7 +160,7 @@ public class MainActivityCreateLogin extends AppCompatActivity {
             }
         }).check();
 
-    }
+    }*/
 
     private void selectPhoto() {
         try{

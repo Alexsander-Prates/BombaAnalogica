@@ -110,7 +110,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
         inicializarLigacoes();
         irShowData();
         receberDadosCadastroAuto();
-        askPermission();
+        //askPermission();
 
 
         btnCadastrarAuto.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +153,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
         });
     }
 
-    private void askPermission() {
+    /*private void askPermission() {
         Dexter.withContext(this).withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE).withListener(new MultiplePermissionsListener() {
             @Override
@@ -167,7 +167,7 @@ public class MainActivityCadastrar extends AppCompatActivity {
             }
         }).check();
 
-    }
+    }*/
 
     private void selectPhoto() {
 

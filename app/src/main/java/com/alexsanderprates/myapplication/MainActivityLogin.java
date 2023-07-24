@@ -5,12 +5,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -139,26 +140,33 @@ public class MainActivityLogin extends AppCompatActivity {
     }
 
     private void requestStoragePermissions() {
-        Dexter.withContext(this)
-                .withPermissions(
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        if (report.areAllPermissionsGranted()) {
-                            // As permissões foram concedidas, você pode acessar o armazenamento externo aqui
-                        } else {
-                            // Alguma(s) permissão(ões) foi/foram negada(s)
-                        }
-                    }
+        //Para acessar midias e arquivos do android 10 para baixo, pode ser essas aqui.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            Dexter.withContext(this)
+                    .withPermissions(
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
 
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).check();
+                    )
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            if (report.areAllPermissionsGranted()) {
+                                // As permissões foram concedidas, você pode acessar o armazenamento externo aqui
+                            } else {
+                                // Alguma(s) permissão(ões) foi/foram negada(s)
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    }).check();
+        } else {
+
+        }
+
     }
 
 
@@ -295,10 +303,12 @@ public class MainActivityLogin extends AppCompatActivity {
             images.add(R.drawable.imagem2tutorial);
             images.add(R.drawable.imagem3tutorial);
             images.add(R.drawable.imagem4tutorial);
+            images.add(R.drawable.imagem5tutorial);
 
             // Cria a dialog personalizada
             final Dialog dialog = new Dialog(this);
             dialog.setContentView(R.layout.dialog_image_pager);
+
 
             ImageView closeButton = dialog.findViewById(R.id.closeButton);
             closeButton.setOnClickListener(v -> dialog.dismiss());
@@ -312,7 +322,6 @@ public class MainActivityLogin extends AppCompatActivity {
             viewPager.setAdapter(adapter);
             tabLayout.setupWithViewPager(viewPager);
 
-            // Exibe a dialog
             dialog.show();
 
             checkBoxVerificador = dialog.findViewById(R.id.checkBoxNoShow);
@@ -337,6 +346,18 @@ public class MainActivityLogin extends AppCompatActivity {
                         currentPosition[0] = 0;
                     }
                     viewPager.setCurrentItem(currentPosition[0], true);
+                }
+            });
+            ImageView btnYouTube = dialog.findViewById(R.id.btnYouTube);
+            btnYouTube.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String abrirYouTube = "l6LX4MKBHRA";
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + abrirYouTube));
+                    intent.putExtra("VIDEO_ID",abrirYouTube);
+                    startActivity(intent);
+                    dialog.dismiss();
                 }
             });
 

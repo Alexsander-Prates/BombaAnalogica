@@ -12,15 +12,39 @@
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
-        <TextView
-            android:id="@+id/titleTextView"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tutorial da Aplicação"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"
-            android:layout_gravity="center_horizontal" />
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            tools:ignore="MissingConstraints">
+
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tutorial Youtube"
+                android:textColor="@color/blue"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_vertical" />
+
+            <ImageView
+                android:id="@+id/btnYouTube"
+                android:layout_width="100px"
+                android:layout_height="100px"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="2dp"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/youtube"
+                android:background="@drawable/ic_next"
+                android:layout_marginStart="16dp" /> <!-- Adicione uma margem para separar o ImageView do TextView -->
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
